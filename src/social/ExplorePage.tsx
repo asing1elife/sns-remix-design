@@ -125,24 +125,16 @@ function ExplorePage() {
         {/* 顶部导航栏 */}
         <div className="sticky top-0 bg-white z-20 px-4 pt-16 pb-3 shadow-sm">
           <div className="flex items-center justify-between gap-3 mb-3">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <img 
-                src="/logo.png" 
-                alt="Logo" 
-                className="h-8 w-auto object-contain"
-              />
-            </div>
-            
+            {/* 搜索按钮 */}
+            <button 
+              onClick={() => setShowSearchPage(true)}
+              className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95"
+            >
+              <Search className="w-5 h-5 text-gray-700" />
+            </button>
+
             {/* 右侧按钮组 */}
             <div className="flex items-center gap-2">
-              {/* 搜索按钮 */}
-              <button 
-                onClick={() => setShowSearchPage(true)}
-                className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95"
-              >
-                <Search className="w-5 h-5 text-gray-700" />
-              </button>
               {/* 扫码按钮 */}
               <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95">
                 <QrCode className="w-5 h-5 text-gray-700" />
