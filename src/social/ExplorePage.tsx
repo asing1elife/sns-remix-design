@@ -1,9 +1,11 @@
 import { Calendar, MapPin, Plus, QrCode, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Activity, allActivities, friendsActivities, hotActivities, rankingActivities, regularActivities } from './activityData'
+import ActivityDetailPage from './ActivityDetailPage'
 import CreateActivityPage from './CreateActivityPage'
 import MyActivitiesPage from './MyActivitiesPage'
 import ProfilePage from './ProfilePage'
+import SearchPage from './SearchPage'
 
 type FilterType = 'all' | 'hot' | 'ranking' | 'friends' | 'regular';
 type PageType = 'explore' | 'activities' | 'profile';
@@ -12,6 +14,8 @@ function ExplorePage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('hot');
   const [showCreatePage, setShowCreatePage] = useState(false);
   const [activePage, setActivePage] = useState<PageType>('explore');
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [showSearchPage, setShowSearchPage] = useState(false);
 
   const getActivitiesByFilter = (): Activity[] => {
     switch (activeFilter) {
@@ -49,6 +53,44 @@ function ExplorePage() {
   // 如果显示创建页面，则渲染创建页面
   if (showCreatePage) {
     return <CreateActivityPage onBack={() => setShowCreatePage(false)} />;
+  }
+
+  // 如果显示搜索页面
+  if (showSearchPage) {
+    return <SearchPage onBack={() => setShowSearchPage(false)} />;
+  }
+
+  // 如果显示活动详情页
+  if (selectedActivity) {
+    return (
+      <ActivityDetailPage
+        activity={{
+          id: selectedActivity.id,
+          title: selectedActivity.title,
+          coverImage: selectedActivity.coverImage,
+          venueName: '示例场馆',
+          location: selectedActivity.location,
+          date: selectedActivity.time.split(' ')[0],
+          time: selectedActivity.time,
+          status: 'ongoing',
+          type: 'participated',
+          totalParticipants: selectedActivity.maxParticipants,
+          confirmedParticipants: selectedActivity.currentParticipants,
+          pricePerHour: 50,
+          participants: [
+            { id: '1', name: '张小明', avatar: 'https://i.pravatar.cc/150?img=1', status: 'confirmed', isFriend: true },
+            { id: '2', name: '李思思', avatar: 'https://i.pravatar.cc/150?img=5', status: 'confirmed', isFriend: true },
+            { id: '3', name: '王大锤', avatar: 'https://i.pravatar.cc/150?img=3', status: 'pending' },
+          ],
+          organizer: {
+            name: '活动组织者',
+            avatar: 'https://i.pravatar.cc/150?img=10',
+            phone: '138****8888',
+          },
+        }}
+        onBack={() => setSelectedActivity(null)}
+      />
+    );
   }
 
   // 如果切换到活动页面
@@ -95,7 +137,10 @@ function ExplorePage() {
             {/* 右侧按钮组 */}
             <div className="flex items-center gap-2">
               {/* 搜索按钮 */}
-              <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95">
+              <button 
+                onClick={() => setShowSearchPage(true)}
+                className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95"
+              >
                 <Search className="w-5 h-5 text-gray-700" />
               </button>
               {/* 扫码按钮 */}
@@ -167,8 +212,13 @@ function ExplorePage() {
           <div className="flex gap-3">
             {/* 左列 */}
             <div className="flex-1 space-y-3">
-              {leftColumn.map((activity) => (
-                <ActivityCard key={activity.id} activity={activity} />
+              {leftColumn.map((activity, index) => (
+                <ActivityCard 
+                  key={activity.id} 
+                  activity={activity}
+                  onClick={index === 0 ? () => setSelectedActivity(activity) : undefined}
+                  isClickable={index === 0}
+                />
               ))}
             </div>
             {/* 右列 */}
@@ -217,9 +267,14 @@ function ExplorePage() {
 }
 
 // 活动卡片组件
-function ActivityCard({ activity }: { activity: Activity }) {
+function ActivityCard({ activity, onClick, isClickable }: { activity: Activity; onClick?: () => void; isClickable?: boolean }) {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all active:scale-[0.98]">
+    <div 
+      className={`bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all ${
+        isClickable ? 'cursor-pointer active:scale-[0.98]' : ''
+      }`}
+      onClick={onClick}
+    >
       {/* 封面图 */}
       <div className="relative" style={{ height: `${activity.imageHeight}px` }}>
         <img
