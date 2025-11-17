@@ -51,8 +51,8 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
       title: '社交互动',
       items: [
         { icon: <Heart className="w-5 h-5" />, label: '我的收藏', count: 23, color: '#FF6B6B' },
-        { icon: <Users className="w-5 h-5" />, label: '我的人脉', count: 156, color: '#10B981' },
-        { icon: <MapPin className="w-5 h-5" />, label: '兴趣标签', count: 8, color: '#5B6FED' },
+        { icon: <Users className="w-5 h-5" />, label: '我的人脉', count: 156, color: '#006666' },
+        { icon: <MapPin className="w-5 h-5" />, label: '兴趣标签', count: 8, color: '#f98801' },
         { icon: <Trophy className="w-5 h-5" />, label: '成就徽章', badge: 'NEW', color: '#F59E0B' },
       ],
     },
@@ -66,7 +66,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
     {
       title: '账户管理',
       items: [
-        { icon: <CreditCard className="w-5 h-5" />, label: '钱包', desc: '余额 ¥128', color: '#10B981' },
+        { icon: <CreditCard className="w-5 h-5" />, label: '钱包', desc: '余额 ¥128', color: '#006666' },
         { icon: <Bell className="w-5 h-5" />, label: '消息通知', badge: '3', color: '#F59E0B' },
         { icon: <Shield className="w-5 h-5" />, label: '隐私设置', color: '#6B7280' },
         { icon: <Settings className="w-5 h-5" />, label: '设置', color: '#6B7280' },
@@ -147,13 +147,13 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
             <div className="bg-white rounded-2xl shadow-lg p-4">
               <div className="grid grid-cols-4 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold" style={{ color: '#5B6FED' }}>
+                  <div className="text-2xl font-bold" style={{ color: '#f98801' }}>
                     {userProfile.stats.activities}
                   </div>
                   <div className="text-xs text-gray-600 mt-1">参与活动</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold" style={{ color: '#10B981' }}>
+                  <div className="text-2xl font-bold" style={{ color: '#006666' }}>
                     {userProfile.stats.organized}
                   </div>
                   <div className="text-xs text-gray-600 mt-1">发起次数</div>
@@ -230,7 +230,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
             <div className="bg-white rounded-2xl shadow-sm p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-gray-900">11月社交概览</span>
-                <button className="text-xs font-medium" style={{ color: '#5B6FED' }}>
+                <button className="text-xs font-medium" style={{ color: '#f98801' }}>
                   查看详情
                 </button>
               </div>
@@ -262,7 +262,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-gray-600">本月社交活跃度</span>
-                  <span className="text-xs font-semibold" style={{ color: '#5B6FED' }}>85%</span>
+                  <span className="text-xs font-semibold" style={{ color: '#f98801' }}>85%</span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
@@ -285,12 +285,12 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
             <div className="bg-white rounded-2xl shadow-sm p-4">
               <div className="flex flex-wrap gap-2">
                 {[
-                  { name: '户外运动', icon: '🏃', color: '#10B981' },
+                  { name: '户外运动', icon: '🏃', color: '#006666' },
                   { name: '艺术展览', icon: '🎨', color: '#8B5CF6' },
                   { name: '咖啡品鉴', icon: '☕', color: '#F59E0B' },
                   { name: '电影', icon: '🎬', color: '#EC4899' },
                   { name: '美食探店', icon: '🍜', color: '#FF6B6B' },
-                  { name: '摄影', icon: '📷', color: '#5B6FED' },
+                  { name: '摄影', icon: '📷', color: '#f98801' },
                 ].map((interest, index) => (
                   <div
                     key={index}
@@ -334,7 +334,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
                         className="w-8 h-8 rounded-lg flex items-center justify-center"
                         style={{ backgroundColor: '#F0F2FF' }}
                       >
-                        <Calendar className="w-4 h-4" style={{ color: '#5B6FED' }} />
+                        <Calendar className="w-4 h-4" style={{ color: '#f98801' }} />
                       </div>
                       <div>
                         <div className="text-sm font-semibold text-gray-900">{activity.name}</div>
@@ -342,7 +342,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-semibold" style={{ color: '#5B6FED' }}>
+                      <div className="text-sm font-semibold" style={{ color: '#f98801' }}>
                         {activity.count}次
                       </div>
                       <div className="text-xs text-gray-500">本月</div>
@@ -373,7 +373,7 @@ function ProfilePage({ onNavigate }: ProfilePageProps) {
               <Calendar className="w-6 h-6 mb-1" />
               <span className="text-xs">活动</span>
             </button>
-            <button className="flex flex-col items-center py-2 px-4 transition-colors" style={{ color: '#5B6FED' }}>
+            <button className="flex flex-col items-center py-2 px-4 transition-colors" style={{ color: '#f98801' }}>
               <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>

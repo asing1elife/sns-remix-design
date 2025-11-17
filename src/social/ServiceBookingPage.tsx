@@ -323,14 +323,14 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   <h2 className="text-base font-semibold text-gray-900">{service.name}</h2>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     {service.level}
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mb-2">{venueName}</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold" style={{ color: '#5B6FED' }}>
+                  <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
                     ¥{service.pricePerHour}
                   </span>
                   <span className="text-xs text-gray-400">/小时</span>
@@ -342,7 +342,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           {/* 日期选择 */}
           <div className="bg-white p-4 mb-2">
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <Calendar className="w-4 h-4" style={{ color: '#f98801' }} />
               选择日期
             </h3>
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
@@ -357,7 +357,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   }`}
                   style={
                     selectedDate.date === date.date
-                      ? { backgroundColor: '#5B6FED' }
+                      ? { backgroundColor: '#f98801' }
                       : {}
                   }
                 >
@@ -371,7 +371,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           {/* 时间选择 */}
           <div className="bg-white p-4 mb-2">
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Clock className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <Clock className="w-4 h-4" style={{ color: '#f98801' }} />
               选择时间
             </h3>
             <div className="grid grid-cols-4 gap-2">
@@ -386,7 +386,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   }`}
                   style={
                     selectedTime === time
-                      ? { backgroundColor: '#5B6FED' }
+                      ? { backgroundColor: '#f98801' }
                       : {}
                   }
                 >
@@ -400,13 +400,13 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           <div className="bg-white p-4 mb-2">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                <UserPlus className="w-4 h-4" style={{ color: '#5B6FED' }} />
+                <UserPlus className="w-4 h-4" style={{ color: '#f98801' }} />
                 邀请好友
               </h3>
               <button
                 onClick={() => setShowFriendInvite(!showFriendInvite)}
                 className="text-xs font-medium"
-                style={{ color: '#5B6FED' }}
+                style={{ color: '#f98801' }}
               >
                 {showFriendInvite ? '收起' : `查看全部 (${friends.length})`}
               </button>
@@ -418,7 +418,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     onClick={() => toggleParticipant(friend.id)}
                     className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
                       selectedParticipants.includes(friend.id)
-                        ? 'bg-[#F0F2FF] ring-2 ring-[#5B6FED]'
+                        ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                   >
@@ -464,7 +464,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                       setShowParticipantDetail(friend);
                     }}
                     className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
-                    style={{ color: '#5B6FED' }}
+                    style={{ color: '#f98801' }}
                   >
                     <Info className="w-4 h-4" />
                   </button>
@@ -476,7 +476,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           {/* 推荐参与者 */}
           <div className="bg-white p-4">
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <Users className="w-4 h-4" style={{ color: '#f98801' }} />
               推荐参与者
             </h3>
             <div className="space-y-2">
@@ -486,7 +486,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     onClick={() => toggleParticipant(participant.id)}
                     className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
                       selectedParticipants.includes(participant.id)
-                        ? 'bg-[#F0F2FF] ring-2 ring-[#5B6FED]'
+                        ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                   >
@@ -536,7 +536,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                       setShowParticipantDetail(participant);
                     }}
                     className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
-                    style={{ color: '#5B6FED' }}
+                    style={{ color: '#f98801' }}
                   >
                     <Info className="w-4 h-4" />
                   </button>
@@ -552,14 +552,14 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
             <span className="text-sm text-gray-600">
               已选择 {selectedParticipants.length} 人
             </span>
-            <span className="text-sm font-semibold" style={{ color: '#5B6FED' }}>
+            <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
               ¥{service.pricePerHour * selectedParticipants.length}
             </span>
           </div>
           <button
             onClick={() => setBookingCompleted(true)}
             className="w-full py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#5B6FED' }}
+            style={{ backgroundColor: '#f98801' }}
             disabled={!selectedTime || selectedParticipants.length === 0}
           >
             {selectedTime && selectedParticipants.length > 0
@@ -633,7 +633,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                         <span
                           key={index}
                           className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                          style={{ backgroundColor: '#5B6FED' }}
+                          style={{ backgroundColor: '#f98801' }}
                         >
                           {tag}
                         </span>
@@ -645,19 +645,19 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                 {/* 统计数据 */}
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
                       {showParticipantDetail.totalActivities || 0}
                     </div>
                     <div className="text-xs text-gray-600 mt-1">参与活动</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
                       {showParticipantDetail.commonActivities || 0}
                     </div>
                     <div className="text-xs text-gray-600 mt-1">共同活动</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
                       {showParticipantDetail.mutualFriends || 0}
                     </div>
                     <div className="text-xs text-gray-600 mt-1">共同好友</div>
@@ -714,7 +714,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     setShowParticipantDetail(null);
                   }}
                   className="w-full py-3 rounded-xl text-white font-semibold transition-all active:scale-[0.98]"
-                  style={{ backgroundColor: '#5B6FED' }}
+                  style={{ backgroundColor: '#f98801' }}
                 >
                   {selectedParticipants.includes(showParticipantDetail.id) ? '取消邀请' : '邀请参与'}
                 </button>

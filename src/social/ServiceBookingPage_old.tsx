@@ -309,14 +309,14 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   <h2 className="text-base font-semibold text-gray-900">{service.name}</h2>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     {service.level}
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 mb-2">{venueName}</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold" style={{ color: '#5B6FED' }}>
+                  <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
                     ¥{service.pricePerHour}
                   </span>
                   <span className="text-xs text-gray-400">/小时</span>
@@ -328,7 +328,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           {/* 日期选择 */}
           <div className="bg-white p-4 mb-2">
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <Calendar className="w-4 h-4" style={{ color: '#f98801' }} />
               选择日期
             </h3>
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
@@ -343,7 +343,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   }`}
                   style={
                     selectedDate.date === date.date
-                      ? { backgroundColor: '#5B6FED' }
+                      ? { backgroundColor: '#f98801' }
                       : {}
                   }
                 >
@@ -357,7 +357,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           {/* 时间选择 */}
           <div className="bg-white p-4 mb-2">
             <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Clock className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <Clock className="w-4 h-4" style={{ color: '#f98801' }} />
               选择时间
             </h3>
             <div className="grid grid-cols-4 gap-2">
@@ -372,7 +372,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                   }`}
                   style={
                     selectedTime === time
-                      ? { backgroundColor: '#5B6FED' }
+                      ? { backgroundColor: '#f98801' }
                       : {}
                   }
                 >
@@ -392,7 +392,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     onClick={() => setSelectedExpert(expert.id)}
                     className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
                       selectedExpert === expert.id
-                        ? 'bg-[#F0F2FF] ring-2 ring-[#5B6FED]'
+                        ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                   >
@@ -444,7 +444,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                       setShowExpertDetail(expert);
                     }}
                     className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 z-10"
-                    style={{ color: '#5B6FED' }}
+                    style={{ color: '#f98801' }}
                   >
                     <Info className="w-4 h-4" />
                   </button>
@@ -459,7 +459,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           <button
             onClick={() => setBookingCompleted(true)}
             className="w-full py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#5B6FED' }}
+            style={{ backgroundColor: '#f98801' }}
             disabled={!selectedTime || !selectedExpert}
           >
             {selectedTime && selectedExpert
@@ -532,7 +532,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                         <span
                           key={index}
                           className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                          style={{ backgroundColor: '#5B6FED' }}
+                          style={{ backgroundColor: '#f98801' }}
                         >
                           {tag}
                         </span>
@@ -544,21 +544,21 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                 {/* 统计数据 */}
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
                       {showExpertDetail.completedSessions}+
                     </div>
                     <div className="text-xs text-gray-600 mt-1">完成课程</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
                       {showExpertDetail.reviewCount}
                     </div>
                     <div className="text-xs text-gray-600 mt-1">学员评价</div>
                   </div>
                   <div className="bg-gray-50 rounded-xl p-3 text-center">
                     <div className="flex items-center justify-center gap-1">
-                      <ThumbsUp className="w-4 h-4" style={{ color: '#5B6FED' }} />
-                      <span className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                      <ThumbsUp className="w-4 h-4" style={{ color: '#f98801' }} />
+                      <span className="text-lg font-bold" style={{ color: '#f98801' }}>
                         98%
                       </span>
                     </div>
@@ -614,7 +614,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     setShowExpertDetail(null);
                   }}
                   className="w-full py-3 rounded-xl text-white font-semibold transition-all active:scale-[0.98]"
-                  style={{ backgroundColor: '#5B6FED' }}
+                  style={{ backgroundColor: '#f98801' }}
                 >
                   选择该达人
                 </button>

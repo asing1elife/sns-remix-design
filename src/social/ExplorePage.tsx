@@ -10,7 +10,6 @@ type PageType = 'explore' | 'activities' | 'profile';
 
 function ExplorePage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('hot');
-  const [searchText, setSearchText] = useState('');
   const [showCreatePage, setShowCreatePage] = useState(false);
   const [activePage, setActivePage] = useState<PageType>('explore');
 
@@ -81,32 +80,37 @@ function ExplorePage() {
           </div>
         </div>
 
-        {/* 顶部搜索栏 */}
+        {/* 顶部导航栏 */}
         <div className="sticky top-0 bg-white z-20 px-4 pt-16 pb-3 shadow-sm">
-          <div className="flex items-center gap-2 mb-3">
-            {/* 搜索框 */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="搜索活动"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+          <div className="flex items-center justify-between gap-3 mb-3">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <img 
+                src="/logo.png" 
+                alt="Logo" 
+                className="h-8 w-auto object-contain"
               />
             </div>
-            {/* 扫码按钮 */}
-            <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95">
-              <QrCode className="w-5 h-5 text-gray-700" />
-            </button>
-            {/* 创建按钮 */}
-            <button 
-              onClick={() => setShowCreatePage(true)}
-              className="p-2 rounded-full hover:opacity-90 transition-all active:scale-95"
-              style={{ backgroundColor: '#5B6FED' }}
-            >
-              <Plus className="w-5 h-5 text-white" />
-            </button>
+            
+            {/* 右侧按钮组 */}
+            <div className="flex items-center gap-2">
+              {/* 搜索按钮 */}
+              <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95">
+                <Search className="w-5 h-5 text-gray-700" />
+              </button>
+              {/* 扫码按钮 */}
+              <button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors active:scale-95">
+                <QrCode className="w-5 h-5 text-gray-700" />
+              </button>
+              {/* 创建按钮 */}
+              <button 
+                onClick={() => setShowCreatePage(true)}
+                className="p-2 rounded-full hover:opacity-90 transition-all active:scale-95"
+                style={{ backgroundColor: '#f98801' }}
+              >
+                <Plus className="w-5 h-5 text-white" />
+              </button>
+            </div>
           </div>
 
           {/* 筛选标签 */}
@@ -118,7 +122,7 @@ function ExplorePage() {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeFilter === 'hot' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeFilter === 'hot' ? { backgroundColor: '#f98801' } : {}}
             >
               热门活动
             </button>
@@ -129,7 +133,7 @@ function ExplorePage() {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeFilter === 'ranking' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeFilter === 'ranking' ? { backgroundColor: '#f98801' } : {}}
             >
               排行榜
             </button>
@@ -140,7 +144,7 @@ function ExplorePage() {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeFilter === 'friends' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeFilter === 'friends' ? { backgroundColor: '#f98801' } : {}}
             >
               老友活动
             </button>
@@ -151,7 +155,7 @@ function ExplorePage() {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeFilter === 'regular' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeFilter === 'regular' ? { backgroundColor: '#f98801' } : {}}
             >
               定期活动
             </button>
@@ -182,7 +186,7 @@ function ExplorePage() {
             <button 
               onClick={() => setActivePage('explore')}
               className="flex flex-col items-center py-2 px-4 transition-colors" 
-              style={{ color: 'explore' === 'explore' ? '#5B6FED' : '#6B7280' }}
+              style={{ color: 'explore' === 'explore' ? '#f98801' : '#6B7280' }}
             >
               <Search className="w-6 h-6 mb-1" />
               <span className="text-xs font-medium">探索</span>
@@ -225,8 +229,8 @@ function ActivityCard({ activity }: { activity: Activity }) {
         />
         {/* 热门标识 */}
         {activity.isHot && (
-          <div className="absolute top-2 left-2 px-2 py-1 rounded-full flex items-center gap-1" style={{ backgroundColor: '#5B6FED' }}>
-            <span className="text-xs text-white font-medium">🔥 热门</span>
+          <div className="absolute top-2 left-2 px-2 py-1 rounded-full flex items-center gap-1" style={{ backgroundColor: '#f98801' }}>
+            <span className="text-xs text-white font-medium">热门</span>
           </div>
         )}
       </div>

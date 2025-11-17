@@ -158,7 +158,7 @@ function CreateActivityPage({ onBack }: CreateActivityPageProps) {
           <div className="px-4 pt-4 pb-3">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold text-gray-900">我的收藏</h2>
-              <Star className="w-4 h-4" style={{ color: '#5B6FED' }} fill="#5B6FED" />
+              <Star className="w-4 h-4" style={{ color: '#f98801' }} fill="#f98801" />
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {favoriteTemplates.map((template) => (
@@ -191,7 +191,7 @@ function CreateActivityPage({ onBack }: CreateActivityPageProps) {
           <div className="px-4 pt-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold text-gray-900">附近推荐</h2>
-              <MapPin className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <MapPin className="w-4 h-4" style={{ color: '#f98801' }} />
             </div>
             <div className="space-y-3">
               {recommendedVenues.map((venue) => (
@@ -209,8 +209,8 @@ function CreateActivityPage({ onBack }: CreateActivityPageProps) {
                     />
                     {/* 热门标识 */}
                     {venue.isHot && (
-                      <div className="absolute top-1 left-1 px-1.5 py-1 rounded-full flex items-center" style={{ backgroundColor: '#5B6FED' }}>
-                        <span className="text-[10px] text-white font-medium leading-none">🔥 热门</span>
+                      <div className="absolute top-1 left-1 px-1.5 py-1 rounded-full flex items-center" style={{ backgroundColor: '#f98801' }}>
+                        <span className="text-[10px] text-white font-medium leading-none">热门</span>
                       </div>
                     )}
                   </div>
@@ -234,7 +234,7 @@ function CreateActivityPage({ onBack }: CreateActivityPageProps) {
                       {venue.isNew ? (
                         <span
                           className="px-2 py-0.5 rounded-full text-xs text-white font-medium"
-                          style={{ backgroundColor: '#5B6FED' }}
+                          style={{ backgroundColor: '#f98801' }}
                         >
                           新场所
                         </span>

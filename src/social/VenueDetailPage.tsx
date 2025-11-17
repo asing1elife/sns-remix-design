@@ -156,7 +156,7 @@ function VenueDetailPage({ onBack, venue }: VenueDetailPageProps) {
           {/* 中间部分：地图组件 */}
           <div className="mt-2 bg-white p-4">
             <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <MapPin className="w-4 h-4" style={{ color: '#f98801' }} />
               位置信息
             </h2>
             <div className="w-full h-40 bg-gray-200 rounded-xl flex items-center justify-center">
@@ -170,7 +170,7 @@ function VenueDetailPage({ onBack, venue }: VenueDetailPageProps) {
           {/* 下部分：推荐服务 */}
           <div className="mt-2 bg-white p-4 pb-6">
             <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Star className="w-4 h-4" style={{ color: '#5B6FED' }} fill="#5B6FED" />
+              <Star className="w-4 h-4" style={{ color: '#f98801' }} fill="#f98801" />
               推荐服务
             </h2>
             <div className="space-y-3">
@@ -197,7 +197,7 @@ function VenueDetailPage({ onBack, venue }: VenueDetailPageProps) {
                         <span
                           className="px-2 py-0.5 rounded-full text-xs font-medium"
                           style={{
-                            backgroundColor: '#5B6FED',
+                            backgroundColor: '#f98801',
                             color: 'white',
                           }}
                         >
@@ -205,7 +205,7 @@ function VenueDetailPage({ onBack, venue }: VenueDetailPageProps) {
                         </span>
                       </div>
                       <div className="flex items-center gap-1 mb-2">
-                        <span className="text-sm font-semibold" style={{ color: '#5B6FED' }}>
+                        <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
                           ¥{service.pricePerHour}
                         </span>
                         <span className="text-xs text-gray-400">/小时</span>

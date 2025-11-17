@@ -210,7 +210,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
               >
-                <MapPin className="w-5 h-5" style={{ color: '#5B6FED' }} />
+                <MapPin className="w-5 h-5" style={{ color: '#f98801' }} />
               </div>
               <div className="flex-1">
                 <div className="text-xs text-gray-500 mb-1">活动场所</div>
@@ -225,7 +225,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
               >
-                <Calendar className="w-5 h-5" style={{ color: '#5B6FED' }} />
+                <Calendar className="w-5 h-5" style={{ color: '#f98801' }} />
               </div>
               <div className="flex-1">
                 <div className="text-xs text-gray-500 mb-1">活动时间</div>
@@ -336,7 +336,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 <span className="text-base font-semibold text-gray-900">
                   {isOrganizer ? '总费用' : '我的费用'}
                 </span>
-                <span className="text-lg font-bold" style={{ color: '#5B6FED' }}>
+                <span className="text-lg font-bold" style={{ color: '#f98801' }}>
                   ¥{isOrganizer 
                     ? activity.pricePerHour * activity.confirmedParticipants 
                     : Math.round(activity.pricePerHour / activity.confirmedParticipants)}
@@ -351,7 +351,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
           {/* 地图 */}
           <div className="px-4 py-5">
             <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <MapPin className="w-4 h-4" style={{ color: '#f98801' }} />
               位置导航
             </h3>
             <div className="w-full h-40 bg-gray-200 rounded-xl flex items-center justify-center mb-3">
@@ -362,7 +362,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
             </div>
             <button
               className="w-full py-2.5 rounded-lg border-2 font-medium text-sm transition-all active:scale-[0.98]"
-              style={{ borderColor: '#5B6FED', color: '#5B6FED' }}
+              style={{ borderColor: '#f98801', color: '#f98801' }}
             >
               打开导航
             </button>
@@ -383,7 +383,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                   </button>
                   <button
                     className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98]"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     联系参与者
                   </button>
@@ -392,13 +392,13 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 <>
                   <button
                     className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98]"
-                    style={{ borderColor: '#5B6FED', color: '#5B6FED' }}
+                    style={{ borderColor: '#f98801', color: '#f98801' }}
                   >
                     联系发起人
                   </button>
                   <button
                     className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98]"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     签到打卡
                   </button>
@@ -411,13 +411,13 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
             <div className="flex gap-3">
               <button
                 className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98]"
-                style={{ borderColor: '#5B6FED', color: '#5B6FED' }}
+                style={{ borderColor: '#f98801', color: '#f98801' }}
               >
                 查看回顾
               </button>
               <button
                 className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98]"
-                style={{ backgroundColor: '#5B6FED' }}
+                style={{ backgroundColor: '#f98801' }}
               >
                 再来一次
               </button>
@@ -436,7 +436,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                   </button>
                   <button
                     className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98]"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     催促确认
                   </button>
@@ -451,7 +451,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                   </button>
                   <button
                     className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] shadow-lg"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     ✓ 确认参与
                   </button>

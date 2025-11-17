@@ -240,7 +240,7 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeTab === 'all' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeTab === 'all' ? { backgroundColor: '#f98801' } : {}}
             >
               全部
             </button>
@@ -251,7 +251,7 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeTab === 'organized' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeTab === 'organized' ? { backgroundColor: '#f98801' } : {}}
             >
               我发起的
             </button>
@@ -262,7 +262,7 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
                   ? 'text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
-              style={activeTab === 'participated' ? { backgroundColor: '#5B6FED' } : {}}
+              style={activeTab === 'participated' ? { backgroundColor: '#f98801' } : {}}
             >
               我参与的
             </button>
@@ -382,7 +382,7 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
               </svg>
               <span className="text-xs">探索</span>
             </button>
-            <button className="flex flex-col items-center py-2 px-4 transition-colors" style={{ color: '#5B6FED' }}>
+            <button className="flex flex-col items-center py-2 px-4 transition-colors" style={{ color: '#f98801' }}>
               <Calendar className="w-6 h-6 mb-1" />
               <span className="text-xs font-medium">活动</span>
             </button>

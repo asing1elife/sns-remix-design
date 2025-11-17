@@ -94,7 +94,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
               >
-                <MapPin className="w-5 h-5" style={{ color: '#5B6FED' }} />
+                <MapPin className="w-5 h-5" style={{ color: '#f98801' }} />
               </div>
               <div className="flex-1">
                 <div className="text-xs text-gray-500 mb-1">活动场所</div>
@@ -110,7 +110,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
               >
-                <svg className="w-5 h-5" style={{ color: '#5B6FED' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-5 h-5" style={{ color: '#f98801' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                   <line x1="9" y1="9" x2="15" y2="9"/>
                   <line x1="9" y1="15" x2="15" y2="15"/>
@@ -122,12 +122,12 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
                   <span className="text-sm font-semibold text-gray-900">{bookingInfo.service.name}</span>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                    style={{ backgroundColor: '#5B6FED' }}
+                    style={{ backgroundColor: '#f98801' }}
                   >
                     {bookingInfo.service.level}
                   </span>
                 </div>
-                <div className="text-sm font-semibold mt-1" style={{ color: '#5B6FED' }}>
+                <div className="text-sm font-semibold mt-1" style={{ color: '#f98801' }}>
                   ¥{bookingInfo.service.pricePerHour}/小时
                 </div>
               </div>
@@ -139,7 +139,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
               >
-                <Calendar className="w-5 h-5" style={{ color: '#5B6FED' }} />
+                <Calendar className="w-5 h-5" style={{ color: '#f98801' }} />
               </div>
               <div className="flex-1">
                 <div className="text-xs text-gray-500 mb-1">活动时间</div>
@@ -204,7 +204,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
           {/* 地图卡片 */}
           <div className="bg-white p-4 mb-2">
             <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4" style={{ color: '#5B6FED' }} />
+              <MapPin className="w-4 h-4" style={{ color: '#f98801' }} />
               位置导航
             </h3>
             <div className="w-full h-40 bg-gray-200 rounded-xl flex items-center justify-center mb-3">
@@ -215,7 +215,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
             </div>
             <button
               className="w-full py-2.5 rounded-lg border-2 font-medium text-sm transition-all active:scale-[0.98]"
-              style={{ borderColor: '#5B6FED', color: '#5B6FED' }}
+              style={{ borderColor: '#f98801', color: '#f98801' }}
             >
               打开导航
             </button>
@@ -257,7 +257,7 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
             </button>
             <button
               className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98]"
-              style={{ backgroundColor: '#5B6FED' }}
+              style={{ backgroundColor: '#f98801' }}
             >
               立即开始
             </button>
