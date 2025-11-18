@@ -12,6 +12,20 @@ interface Participant {
   avatar: string;
   status: 'confirmed' | 'declined' | 'pending';
   isFriend?: boolean;
+  bio?: string;
+  fullBio?: string;
+  totalActivities?: number;
+  commonActivities?: number;
+  activityScore?: number;
+  interests?: string[];
+  tags?: string[];
+  photos?: Array<{
+    id: string;
+    url: string;
+    activityTitle: string;
+    date: string;
+    likes: number;
+  }>;
 }
 
 interface Comment {

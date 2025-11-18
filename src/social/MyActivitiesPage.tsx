@@ -159,13 +159,29 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
   };
 
   // Mock participant data for activity detail
-  const getMockParticipants = (activity: MyActivity) => [
+    const getMockParticipants = (activity: Activity) => [
     {
       id: '1',
       name: '张小明',
       avatar: 'https://i.pravatar.cc/150?img=1',
       status: 'confirmed' as const,
       isFriend: true,
+      bio: '运动达人',
+      fullBio: '热爱运动和户外活动，经常参加各类团体活动。',
+      totalActivities: 45,
+      commonActivities: 12,
+      activityScore: 4.9,
+      interests: ['篮球', '跑步', '摄影'],
+      tags: ['活跃'],
+      photos: [
+        { id: 'p1', url: 'https://picsum.photos/400/400?random=21', activityTitle: '周末篮球赛', date: '2025-11-10', likes: 23 },
+        { id: 'p2', url: 'https://picsum.photos/400/500?random=22', activityTitle: '山地徒步', date: '2025-11-05', likes: 18 },
+        { id: 'p3', url: 'https://picsum.photos/400/600?random=23', activityTitle: '城市骑行', date: '2025-10-28', likes: 31 },
+        { id: 'p4', url: 'https://picsum.photos/500/400?random=24', activityTitle: '羽毛球', date: '2025-10-20', likes: 15 },
+        { id: 'p5', url: 'https://picsum.photos/400/400?random=25', activityTitle: '登山', date: '2025-10-15', likes: 27 },
+        { id: 'p6', url: 'https://picsum.photos/600/400?random=26', activityTitle: '夜跑', date: '2025-10-08', likes: 19 },
+        { id: 'p7', url: 'https://picsum.photos/400/500?random=27', activityTitle: '足球赛', date: '2025-10-01', likes: 42 },
+      ]
     },
     {
       id: '2',
@@ -173,6 +189,16 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
       avatar: 'https://i.pravatar.cc/150?img=2',
       status: activity.status === 'pending' ? 'pending' as const : 'confirmed' as const,
       isFriend: true,
+      bio: '读书爱好者',
+      totalActivities: 32,
+      commonActivities: 7,
+      activityScore: 4.6,
+      interests: ['阅读', '写作', '音乐'],
+      photos: [
+        { id: 'p8', url: 'https://picsum.photos/400/400?random=28', activityTitle: '读书会', date: '2025-11-01', likes: 12 },
+        { id: 'p9', url: 'https://picsum.photos/400/500?random=29', activityTitle: '书店', date: '2025-10-20', likes: 16 },
+        { id: 'p10', url: 'https://picsum.photos/500/400?random=30', activityTitle: '音乐节', date: '2025-10-10', likes: 25 },
+      ]
     },
     {
       id: '3',
@@ -180,6 +206,17 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
       avatar: 'https://i.pravatar.cc/150?img=3',
       status: 'confirmed' as const,
       isFriend: false,
+      bio: '美食探索者',
+      totalActivities: 28,
+      commonActivities: 4,
+      activityScore: 4.5,
+      interests: ['美食', '旅行'],
+      photos: [
+        { id: 'p11', url: 'https://picsum.photos/400/400?random=31', activityTitle: '美食节', date: '2025-11-08', likes: 35 },
+        { id: 'p12', url: 'https://picsum.photos/400/600?random=32', activityTitle: '烘焙', date: '2025-11-01', likes: 28 },
+        { id: 'p13', url: 'https://picsum.photos/500/400?random=33', activityTitle: '咖啡', date: '2025-10-25', likes: 22 },
+        { id: 'p14', url: 'https://picsum.photos/400/400?random=34', activityTitle: '火锅', date: '2025-10-18', likes: 45 },
+      ]
     },
     {
       id: '4',
@@ -187,6 +224,15 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
       avatar: 'https://i.pravatar.cc/150?img=4',
       status: activity.status === 'cancelled' ? 'declined' as const : 'confirmed' as const,
       isFriend: false,
+      bio: '科技爱好者',
+      totalActivities: 19,
+      commonActivities: 2,
+      activityScore: 4.3,
+      interests: ['编程', '游戏'],
+      photos: [
+        { id: 'p15', url: 'https://picsum.photos/400/500?random=35', activityTitle: '技术分享', date: '2025-10-30', likes: 18 },
+        { id: 'p16', url: 'https://picsum.photos/400/400?random=36', activityTitle: '黑客松', date: '2025-10-15', likes: 32 },
+      ]
     },
   ].slice(0, activity.totalParticipants);
 

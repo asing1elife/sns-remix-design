@@ -34,6 +34,13 @@ interface Participant {
   interests?: string[]; // 兴趣爱好
   isFriend?: boolean; // 是否为好友
   mutualFriends?: number; // 共同好友数
+  photos?: Array<{
+    id: string;
+    url: string;
+    activityTitle: string;
+    date: string;
+    likes: number;
+  }>;
 }
 
 // 好友列表（用于邀请）
@@ -50,6 +57,15 @@ const friends: Participant[] = [
     totalActivities: 25,
     activityScore: 4.7,
     interests: ['健身', '跑步', '游泳'],
+    photos: [
+      { id: 'f1p1', url: 'https://picsum.photos/400/400?random=41', activityTitle: '晨跑打卡', date: '2025-11-15', likes: 28 },
+      { id: 'f1p2', url: 'https://picsum.photos/400/500?random=42', activityTitle: '健身房', date: '2025-11-12', likes: 35 },
+      { id: 'f1p3', url: 'https://picsum.photos/500/400?random=43', activityTitle: '马拉松', date: '2025-11-08', likes: 52 },
+      { id: 'f1p4', url: 'https://picsum.photos/400/600?random=44', activityTitle: '游泳训练', date: '2025-11-03', likes: 24 },
+      { id: 'f1p5', url: 'https://picsum.photos/400/400?random=45', activityTitle: '力量训练', date: '2025-10-28', likes: 31 },
+      { id: 'f1p6', url: 'https://picsum.photos/600/400?random=46', activityTitle: '登山', date: '2025-10-20', likes: 45 },
+      { id: 'f1p7', url: 'https://picsum.photos/400/500?random=47', activityTitle: '骑行', date: '2025-10-15', likes: 38 },
+    ]
   },
   {
     id: 'friend-2',
@@ -63,6 +79,13 @@ const friends: Participant[] = [
     totalActivities: 18,
     activityScore: 4.5,
     interests: ['瑜伽', '冥想', '茶道'],
+    photos: [
+      { id: 'f2p1', url: 'https://picsum.photos/400/500?random=48', activityTitle: '瑜伽课', date: '2025-11-14', likes: 42 },
+      { id: 'f2p2', url: 'https://picsum.photos/400/400?random=49', activityTitle: '冥想静修', date: '2025-11-10', likes: 36 },
+      { id: 'f2p3', url: 'https://picsum.photos/500/400?random=50', activityTitle: '茶艺体验', date: '2025-11-05', likes: 29 },
+      { id: 'f2p4', url: 'https://picsum.photos/400/600?random=51', activityTitle: '户外瑜伽', date: '2025-10-30', likes: 48 },
+      { id: 'f2p5', url: 'https://picsum.photos/400/400?random=52', activityTitle: '普拉提', date: '2025-10-22', likes: 33 },
+    ]
   },
   {
     id: 'friend-3',
@@ -76,6 +99,14 @@ const friends: Participant[] = [
     totalActivities: 12,
     activityScore: 4.2,
     interests: ['美食', '烘焙', '摄影'],
+    photos: [
+      { id: 'f3p1', url: 'https://picsum.photos/400/400?random=53', activityTitle: '美食节', date: '2025-11-13', likes: 56 },
+      { id: 'f3p2', url: 'https://picsum.photos/400/500?random=54', activityTitle: '烘焙课', date: '2025-11-07', likes: 41 },
+      { id: 'f3p3', url: 'https://picsum.photos/500/400?random=55', activityTitle: '餐厅打卡', date: '2025-11-01', likes: 38 },
+      { id: 'f3p4', url: 'https://picsum.photos/400/600?random=56', activityTitle: '私房菜', date: '2025-10-25', likes: 44 },
+      { id: 'f3p5', url: 'https://picsum.photos/400/400?random=57', activityTitle: '甜品制作', date: '2025-10-18', likes: 52 },
+      { id: 'f3p6', url: 'https://picsum.photos/600/400?random=58', activityTitle: '咖啡拉花', date: '2025-10-10', likes: 47 },
+    ]
   },
 ];
 
@@ -100,6 +131,16 @@ const recommendedParticipants: Participant[] = [
       'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
       'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400',
     ],
+    photos: [
+      { id: 'r1p1', url: 'https://picsum.photos/400/400?random=61', activityTitle: '晨跑打卡', date: '2025-11-16', likes: 38 },
+      { id: 'r1p2', url: 'https://picsum.photos/400/500?random=62', activityTitle: '健身房训练', date: '2025-11-14', likes: 45 },
+      { id: 'r1p3', url: 'https://picsum.photos/500/400?random=63', activityTitle: '篮球比赛', date: '2025-11-11', likes: 52 },
+      { id: 'r1p4', url: 'https://picsum.photos/400/600?random=64', activityTitle: '登山徒步', date: '2025-11-08', likes: 67 },
+      { id: 'r1p5', url: 'https://picsum.photos/400/400?random=65', activityTitle: '户外拓展', date: '2025-11-03', likes: 43 },
+      { id: 'r1p6', url: 'https://picsum.photos/600/400?random=66', activityTitle: '马拉松', date: '2025-10-28', likes: 78 },
+      { id: 'r1p7', url: 'https://picsum.photos/400/500?random=67', activityTitle: '攀岩体验', date: '2025-10-22', likes: 56 },
+      { id: 'r1p8', url: 'https://picsum.photos/400/400?random=68', activityTitle: '骑行活动', date: '2025-10-15', likes: 49 },
+    ]
   },
   {
     id: 'participant-2',
@@ -120,6 +161,15 @@ const recommendedParticipants: Participant[] = [
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400',
       'https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=400',
     ],
+    photos: [
+      { id: 'r2p1', url: 'https://picsum.photos/400/500?random=69', activityTitle: '瑜伽课程', date: '2025-11-17', likes: 54 },
+      { id: 'r2p2', url: 'https://picsum.photos/400/400?random=70', activityTitle: '冥想静修', date: '2025-11-13', likes: 48 },
+      { id: 'r2p3', url: 'https://picsum.photos/500/400?random=71', activityTitle: '茶艺品鉴', date: '2025-11-09', likes: 42 },
+      { id: 'r2p4', url: 'https://picsum.photos/400/600?random=72', activityTitle: '读书会', date: '2025-11-06', likes: 36 },
+      { id: 'r2p5', url: 'https://picsum.photos/400/400?random=73', activityTitle: '户外瑜伽', date: '2025-11-02', likes: 61 },
+      { id: 'r2p6', url: 'https://picsum.photos/600/400?random=74', activityTitle: '绘画工作坊', date: '2025-10-27', likes: 39 },
+      { id: 'r2p7', url: 'https://picsum.photos/400/500?random=75', activityTitle: '禅修体验', date: '2025-10-20', likes: 45 },
+    ]
   },
   {
     id: 'participant-3',
@@ -139,6 +189,14 @@ const recommendedParticipants: Participant[] = [
       'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400',
       'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=400',
     ],
+    photos: [
+      { id: 'r3p1', url: 'https://picsum.photos/400/400?random=76', activityTitle: '美食节打卡', date: '2025-11-15', likes: 72 },
+      { id: 'r3p2', url: 'https://picsum.photos/400/500?random=77', activityTitle: '烘焙课程', date: '2025-11-12', likes: 58 },
+      { id: 'r3p3', url: 'https://picsum.photos/500/400?random=78', activityTitle: '日料探店', date: '2025-11-07', likes: 64 },
+      { id: 'r3p4', url: 'https://picsum.photos/400/600?random=79', activityTitle: '私房菜聚会', date: '2025-11-04', likes: 81 },
+      { id: 'r3p5', url: 'https://picsum.photos/400/400?random=80', activityTitle: '咖啡拉花', date: '2025-10-29', likes: 55 },
+      { id: 'r3p6', url: 'https://picsum.photos/600/400?random=81', activityTitle: '西餐制作', date: '2025-10-24', likes: 69 },
+    ]
   },
   {
     id: 'participant-4',
@@ -159,6 +217,15 @@ const recommendedParticipants: Participant[] = [
       'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=400',
       'https://images.unsplash.com/photo-1519505907962-0a6cb0167c73?w=400',
     ],
+    photos: [
+      { id: 'r4p1', url: 'https://picsum.photos/400/500?random=82', activityTitle: '普拉提训练', date: '2025-11-16', likes: 47 },
+      { id: 'r4p2', url: 'https://picsum.photos/400/400?random=83', activityTitle: '体态矫正', date: '2025-11-13', likes: 52 },
+      { id: 'r4p3', url: 'https://picsum.photos/500/400?random=84', activityTitle: '晨跑活动', date: '2025-11-10', likes: 41 },
+      { id: 'r4p4', url: 'https://picsum.photos/400/600?random=85', activityTitle: '健康讲座', date: '2025-11-05', likes: 38 },
+      { id: 'r4p5', url: 'https://picsum.photos/400/400?random=86', activityTitle: '瑜伽冥想', date: '2025-11-01', likes: 44 },
+      { id: 'r4p6', url: 'https://picsum.photos/600/400?random=87', activityTitle: '轻食制作', date: '2025-10-26', likes: 50 },
+      { id: 'r4p7', url: 'https://picsum.photos/400/500?random=88', activityTitle: '拉伸课程', date: '2025-10-19', likes: 46 },
+    ]
   },
 ];
 

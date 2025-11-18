@@ -1,4 +1,5 @@
-import { Heart, MessageCircle, Phone, Star, UserPlus, X } from 'lucide-react';
+import { Heart, MessageCircle, Phone, Star, UserPlus, X } from 'lucide-react'
+import { useState } from 'react'
 
 interface ParticipantDetailModalProps {
   participant: {
@@ -14,6 +15,13 @@ interface ParticipantDetailModalProps {
     activityScore?: number;
     interests?: string[];
     tags?: string[];
+    photos?: Array<{
+      id: string;
+      url: string;
+      activityTitle: string;
+      date: string;
+      likes: number;
+    }>;
   } | null;
   onClose: () => void;
   onAction?: (actionType: 'message' | 'call' | 'addFriend') => void;
@@ -21,6 +29,8 @@ interface ParticipantDetailModalProps {
 
 function ParticipantDetailModal({ participant, onClose, onAction }: ParticipantDetailModalProps) {
   if (!participant) return null;
+
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   const handleAction = (actionType: 'message' | 'call' | 'addFriend') => {
     if (onAction) {
@@ -152,6 +162,36 @@ function ParticipantDetailModal({ participant, onClose, onAction }: ParticipantD
             </div>
           )}
 
+          {/* 照片墙 */}
+          {participant.photos && participant.photos.length > 0 && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-gray-900">TA的照片</h4>
+                <span className="text-xs text-gray-500">{participant.photos.length} 张</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {participant.photos.slice(0, 6).map((photo) => (
+                  <div
+                    key={photo.id}
+                    className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 active:scale-[0.95] transition-transform cursor-pointer"
+                    onClick={() => setSelectedPhoto(photo.url)}
+                  >
+                    <img
+                      src={photo.url}
+                      alt={photo.activityTitle}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+                {participant.photos.length > 6 && (
+                  <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-900/80 flex items-center justify-center text-white text-sm font-medium">
+                    +{participant.photos.length - 6}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* 操作按钮 */}
           <div className="flex gap-3">
             {participant.isFriend ? (
@@ -186,6 +226,27 @@ function ParticipantDetailModal({ participant, onClose, onAction }: ParticipantD
           </div>
         </div>
       </div>
+
+      {/* 全屏照片浏览 */}
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 bg-black z-[60] flex items-center justify-center"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <button
+            onClick={() => setSelectedPhoto(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 backdrop-blur-sm rounded-full active:scale-95 transition-transform"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+          <img
+            src={selectedPhoto}
+            alt="照片预览"
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }

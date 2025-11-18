@@ -167,6 +167,11 @@ src/social/
   - 活跃度评分（带星星图标）
 - 个人简介
 - 兴趣爱好标签
+- **照片墙**（3列网格布局）:
+  - 最多显示6张照片缩略图
+  - 超过6张显示"+N"提示
+  - 点击照片进入全屏预览模式
+  - 全屏模式支持关闭按钮（右上角）
 - 操作按钮（根据是否好友显示不同）
 
 **接口设计**:
@@ -185,6 +190,13 @@ interface ParticipantDetailModalProps {
     activityScore?: number;
     interests?: string[];
     tags?: string[];
+    photos?: Array<{
+      id: string;
+      url: string;
+      activityTitle: string;
+      date: string;
+      likes: number;
+    }>;
   } | null;
   onClose: () => void;
   onAction?: (actionType: 'message' | 'call' | 'addFriend') => void;
