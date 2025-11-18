@@ -1,4 +1,6 @@
-import { AlertCircle, Calendar, Check, ChevronLeft, Clock, MapPin, MessageCircle, Phone, Share2, X } from 'lucide-react';
+import { AlertCircle, Calendar, Check, ChevronLeft, Clock, Heart, MapPin, MessageCircle, Phone, Send, Share2, Star, ThumbsUp, UserPlus, X } from 'lucide-react'
+import { useState } from 'react'
+import ActivityReviewPage from './ActivityReviewPage'
 
 type ActivityStatus = 'ongoing' | 'completed' | 'cancelled' | 'pending';
 type ActivityType = 'organized' | 'participated';
@@ -9,6 +11,18 @@ interface Participant {
   avatar: string;
   status: 'confirmed' | 'declined' | 'pending';
   isFriend?: boolean;
+}
+
+interface Comment {
+  id: string;
+  user: {
+    name: string;
+    avatar: string;
+  };
+  content: string;
+  time: string;
+  likes: number;
+  isLiked: boolean;
 }
 
 interface ActivityDetailPageProps {
@@ -36,6 +50,76 @@ interface ActivityDetailPageProps {
 }
 
 function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
+  const [showReviewPage, setShowReviewPage] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
+  const [comments, setComments] = useState<Comment[]>([
+    {
+      id: '1',
+      user: {
+        name: '张三',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zhang',
+      },
+      content: '期待这次活动！希望能认识更多朋友 🎉',
+      time: '2小时前',
+      likes: 12,
+      isLiked: false,
+    },
+    {
+      id: '2',
+      user: {
+        name: '李四',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Li',
+      },
+      content: '场地不错，上次去过，环境很好',
+      time: '5小时前',
+      likes: 8,
+      isLiked: true,
+    },
+    {
+      id: '3',
+      user: {
+        name: '王五',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wang',
+      },
+      content: '有人可以拼车吗？我从市中心出发',
+      time: '1天前',
+      likes: 3,
+      isLiked: false,
+    },
+  ]);
+  const [newComment, setNewComment] = useState('');
+
+  const handleLikeComment = (commentId: string) => {
+    setComments(comments.map(comment => {
+      if (comment.id === commentId) {
+        return {
+          ...comment,
+          isLiked: !comment.isLiked,
+          likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+        };
+      }
+      return comment;
+    }));
+  };
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const comment: Comment = {
+        id: Date.now().toString(),
+        user: {
+          name: '我',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Me',
+        },
+        content: newComment,
+        time: '刚刚',
+        likes: 0,
+        isLiked: false,
+      };
+      setComments([comment, ...comments]);
+      setNewComment('');
+    }
+  };
+
   const getStatusConfig = (status: ActivityStatus, type: ActivityType) => {
     switch (status) {
       case 'ongoing':
@@ -76,6 +160,22 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
   const statusConfig = getStatusConfig(activity.status, activity.type);
   const isOrganizer = activity.type === 'organized';
   const isPendingParticipant = activity.status === 'pending' && activity.type === 'participated';
+
+  // 如果显示回顾页面，渲染回顾页面组件
+  if (showReviewPage) {
+    return (
+      <ActivityReviewPage
+        onBack={() => setShowReviewPage(false)}
+        activity={{
+          title: activity.title,
+          date: activity.date,
+          location: activity.location,
+          duration: '2小时30分',
+          participantCount: activity.confirmedParticipants,
+        }}
+      />
+    );
+  }
 
   const getParticipantStatusColor = (status: string) => {
     switch (status) {
@@ -291,7 +391,11 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
               {activity.participants.map((participant) => {
                 const statusColor = getParticipantStatusColor(participant.status);
                 return (
-                  <div key={participant.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <button
+                    key={participant.id}
+                    onClick={() => setSelectedParticipant(participant)}
+                    className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg transition-all active:scale-[0.98] active:bg-gray-100"
+                  >
                     <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
                       <img
                         src={participant.avatar}
@@ -299,7 +403,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 text-left">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold text-gray-900">{participant.name}</span>
                         {participant.isFriend && (
@@ -310,7 +414,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                     <span className={`text-xs px-2 py-1 rounded-full ${statusColor.bg} ${statusColor.text}`}>
                       {getParticipantStatusText(participant.status)}
                     </span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -342,6 +446,74 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                     : Math.round(activity.pricePerHour / activity.confirmedParticipants)}
                 </span>
               </div>
+            </div>
+          </div>
+
+          {/* 分隔线 */}
+          <div className="h-2 bg-gray-50"></div>
+
+          {/* 评论区 */}
+          <div className="px-4 py-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-semibold text-gray-900">评论</h3>
+              <span className="text-sm text-gray-500">{comments.length} 条</span>
+            </div>
+
+            {/* 评论列表 */}
+            <div className="space-y-4 mb-4">
+              {comments.map((comment) => (
+                <div key={comment.id} className="flex gap-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                    <img
+                      src={comment.user.avatar}
+                      alt={comment.user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-semibold text-gray-900">{comment.user.name}</span>
+                      <span className="text-xs text-gray-400">{comment.time}</span>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-2">{comment.content}</p>
+                    <button
+                      onClick={() => handleLikeComment(comment.id)}
+                      className="flex items-center gap-1 text-xs text-gray-500 hover:text-[#f98801] transition-colors"
+                    >
+                      <ThumbsUp
+                        className={`w-3.5 h-3.5 ${comment.isLiked ? 'fill-[#f98801] text-[#f98801]' : ''}`}
+                      />
+                      <span className={comment.isLiked ? 'text-[#f98801]' : ''}>{comment.likes}</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 评论输入框 */}
+            <div className="flex gap-2 items-center bg-gray-50 rounded-full px-4 py-2">
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="说点什么..."
+                className="flex-1 bg-transparent text-sm outline-none"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleAddComment();
+                  }
+                }}
+              />
+              <button
+                onClick={handleAddComment}
+                disabled={!newComment.trim()}
+                className="p-1.5 rounded-full transition-all active:scale-95 disabled:opacity-40"
+                style={{ 
+                  backgroundColor: newComment.trim() ? '#f98801' : '#E5E7EB',
+                }}
+              >
+                <Send className="w-4 h-4 text-white" />
+              </button>
             </div>
           </div>
 
@@ -410,6 +582,7 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
           {activity.status === 'completed' && (
             <div className="flex gap-3">
               <button
+                onClick={() => setShowReviewPage(true)}
                 className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98]"
                 style={{ borderColor: '#f98801', color: '#f98801' }}
               >
@@ -470,6 +643,136 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
             </button>
           )}
         </div>
+
+        {/* 参与者详情半屏弹窗 */}
+        {selectedParticipant && (
+          <div
+            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
+            onClick={() => setSelectedParticipant(null)}
+          >
+            <div
+              className="w-[375px] bg-white rounded-t-3xl max-h-[70vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 关闭按钮 */}
+              <div className="sticky top-0 bg-white z-10 px-4 pt-4 pb-2 flex items-center justify-between border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">参与者详情</h2>
+                <button
+                  onClick={() => setSelectedParticipant(null)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+
+              {/* 参与者头部信息 */}
+              <div className="p-4">
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                    <img
+                      src={selectedParticipant.avatar}
+                      alt={selectedParticipant.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">{selectedParticipant.name}</h3>
+                      {selectedParticipant.isFriend && (
+                        <Heart className="w-4 h-4 fill-red-500 text-red-500" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {selectedParticipant.status === 'confirmed' && (
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">已确认参加</span>
+                      )}
+                      {selectedParticipant.status === 'pending' && (
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">待确认</span>
+                      )}
+                      {selectedParticipant.status === 'declined' && (
+                        <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">已拒绝</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 统计数据 */}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="bg-gray-50 rounded-xl p-3 text-center">
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
+                      25
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">参与活动</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-3 text-center">
+                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
+                      8
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">共同活动</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-3 text-center">
+                    <div className="flex items-center justify-center gap-1">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <div className="text-lg font-bold" style={{ color: '#f98801' }}>
+                        4.8
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">活跃度</div>
+                  </div>
+                </div>
+
+                {/* 详细介绍 */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">个人简介</h4>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    热爱运动和户外活动，经常参加各类团体活动。性格开朗友善，善于营造活跃气氛。希望通过活动认识更多志同道合的朋友。
+                  </p>
+                </div>
+
+                {/* 兴趣爱好 */}
+                <div className="mb-4">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-2">兴趣爱好</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">健身</span>
+                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">篮球</span>
+                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">登山</span>
+                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">摄影</span>
+                  </div>
+                </div>
+
+                {/* 操作按钮 */}
+                <div className="flex gap-3">
+                  {selectedParticipant.isFriend ? (
+                    <>
+                      <button
+                        className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                        style={{ borderColor: '#f98801', color: '#f98801' }}
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        发消息
+                      </button>
+                      <button
+                        className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                        style={{ backgroundColor: '#f98801' }}
+                      >
+                        <Phone className="w-5 h-5" />
+                        打电话
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                      style={{ backgroundColor: '#f98801' }}
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      添加好友
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

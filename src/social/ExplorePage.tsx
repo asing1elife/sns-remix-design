@@ -276,8 +276,14 @@ function ActivityCard({ activity, onClick, isClickable }: { activity: Activity; 
         />
         {/* 热门标识 */}
         {activity.isHot && (
-          <div className="absolute top-2 left-2 px-2 py-1 rounded-full flex items-center gap-1" style={{ backgroundColor: '#f98801' }}>
-            <span className="text-xs text-white font-medium">热门</span>
+          <div className="absolute top-2 left-2 px-2 py-1 rounded-full flex items-center" style={{ backgroundColor: '#f98801' }}>
+            <span className="text-xs text-white font-medium leading-none">热门</span>
+          </div>
+        )}
+        {/* 距离标识 */}
+        {activity.distance && (
+          <div className="absolute bottom-2 left-2 px-2 py-1 rounded-full bg-black/50 backdrop-blur-sm flex items-center">
+            <span className="text-xs text-white font-medium leading-none">{activity.distance} 公里</span>
           </div>
         )}
       </div>

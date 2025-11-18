@@ -4,6 +4,7 @@ export interface Activity {
   title: string;
   coverImage: string;
   location: string;
+  distance?: string; // 距离用户的距离（可选）
   time: string;
   maxParticipants: number;
   currentParticipants: number;
@@ -19,6 +20,7 @@ export const hotActivities: Activity[] = [
     title: '周末露营野餐派对',
     coverImage: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400',
     location: '上海·世纪公园',
+    distance: '1.2',
     time: '11月23日 10:00',
     maxParticipants: 30,
     currentParticipants: 24,
@@ -31,6 +33,7 @@ export const hotActivities: Activity[] = [
     title: '城市徒步探索之旅',
     coverImage: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400',
     location: '北京·故宫周边',
+    distance: '3.5',
     time: '11月24日 14:00',
     maxParticipants: 20,
     currentParticipants: 18,
@@ -42,6 +45,7 @@ export const hotActivities: Activity[] = [
     title: '咖啡品鉴沙龙',
     coverImage: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',
     location: '杭州·西湖区',
+    distance: '0.8',
     time: '11月25日 15:00',
     maxParticipants: 15,
     currentParticipants: 12,
