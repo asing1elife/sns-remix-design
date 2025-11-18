@@ -1,6 +1,7 @@
-import { Calendar, ChevronLeft, Clock, Heart, Info, UserPlus, Users } from 'lucide-react'
+import { Calendar, ChevronLeft, Clock, Heart, Info, Plus, RefreshCw, UserPlus, Users, X } from 'lucide-react'
 import { useState } from 'react'
 import BookingPendingPage from './BookingPendingPage'
+import FriendSelectionPage from './FriendSelectionPage'
 import ParticipantDetailModal from './ParticipantDetailModal'
 
 interface ServiceBookingPageProps {
@@ -258,8 +259,49 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([]); // 支持多选
   const [showParticipantDetail, setShowParticipantDetail] = useState<Participant | null>(null);
-  const [showFriendInvite, setShowFriendInvite] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
+  
+  // 新增：已邀请的好友列表
+  const [invitedFriends, setInvitedFriends] = useState<string[]>([]); // 已邀请的好友ID列表
+  const [showFriendSelection, setShowFriendSelection] = useState(false); // 是否显示好友选择页面
+  
+  // 新增：活动配置
+  const [isPrivate, setIsPrivate] = useState(false); // 是否私密活动
+  const [costType, setCostType] = useState<'aa' | 'free' | 'organizer'>('aa'); // 费用类型：AA制、免费、发起人承担
+  const [maxParticipants, setMaxParticipants] = useState<number>(10); // 最大参与人数
+
+  // 新增：推荐参与者筛选和刷新
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); // 选中的标签
+  const [displayedRecommendations, setDisplayedRecommendations] = useState(recommendedParticipants); // 当前显示的推荐参与者
+
+  // 从所有推荐参与者中提取唯一标签
+  const allTags = Array.from(new Set(recommendedParticipants.flatMap(p => p.tags)));
+
+  // 刷新推荐参与者（随机打乱）
+  const refreshRecommendations = () => {
+    const shuffled = [...recommendedParticipants].sort(() => Math.random() - 0.5);
+    setDisplayedRecommendations(shuffled);
+    setSelectedTags([]); // 清空标签筛选
+  };
+
+  // 切换标签筛选
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => {
+      const newTags = prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag];
+      
+      // 根据选中的标签筛选参与者
+      if (newTags.length === 0) {
+        setDisplayedRecommendations(recommendedParticipants);
+      } else {
+        const filtered = recommendedParticipants.filter(p => 
+          newTags.some(tag => p.tags.includes(tag))
+        );
+        setDisplayedRecommendations(filtered);
+      }
+      
+      return newTags;
+    });
+  };
 
   // 所有参与者（好友+推荐）
   const allParticipants = [...friends, ...recommendedParticipants];
@@ -270,6 +312,26 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
       prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
     );
   };
+
+  // 好友选择确认
+  const handleFriendSelectionConfirm = (selectedIds: string[]) => {
+    setInvitedFriends(selectedIds);
+    // 将选中的好友添加到参与者列表
+    setSelectedParticipants(prev => {
+      const newIds = selectedIds.filter(id => !prev.includes(id));
+      return [...prev, ...newIds];
+    });
+    setShowFriendSelection(false);
+  };
+
+  // 移除已邀请的好友
+  const removeInvitedFriend = (friendId: string) => {
+    setInvitedFriends(prev => prev.filter(id => id !== friendId));
+    setSelectedParticipants(prev => prev.filter(id => id !== friendId));
+  };
+
+  // 获取已邀请的好友对象列表
+  const invitedFriendsList = friends.filter(f => invitedFriends.includes(f.id));
 
   // 如果预约完成，显示待审核页面
   if (bookingCompleted && selectedTime && selectedParticipants.length > 0) {
@@ -314,6 +376,10 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           participants: participantsData,
           date: formattedDate,
           time: selectedTime,
+          isPrivate: isPrivate,
+          costType: costType,
+          maxParticipants: maxParticipants,
+          merchantStatus: 'pending', // 默认为等待商户确认
         }}
       />
     );
@@ -464,32 +530,162 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
             </div>
           </div>
 
+          {/* 活动配置 */}
+          <div className="bg-white p-4 mb-2">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">活动配置</h3>
+            
+            {/* 私密活动开关 */}
+            <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+              <div className="flex-1">
+                <div className="text-sm font-medium text-gray-900 mb-1">私密活动</div>
+                <div className="text-xs text-gray-500">开启后活动不会在推荐页展示</div>
+              </div>
+              <button
+                onClick={() => setIsPrivate(!isPrivate)}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  isPrivate ? 'bg-[#f98801]' : 'bg-gray-300'
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                    isPrivate ? 'translate-x-6' : 'translate-x-0.5'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* 参与人数设置 */}
+            <div className="mb-4 pb-4 border-b border-gray-100">
+              <div className="text-sm font-medium text-gray-900 mb-3">参与人数上限</div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setMaxParticipants(prev => Math.max(2, prev - 1))}
+                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 transition-all flex items-center justify-center font-semibold text-gray-700"
+                >
+                  -
+                </button>
+                <div className="flex-1 text-center">
+                  <div className="text-2xl font-bold" style={{ color: '#f98801' }}>
+                    {maxParticipants}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">人（含发起人）</div>
+                </div>
+                <button
+                  onClick={() => setMaxParticipants(prev => Math.min(50, prev + 1))}
+                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 transition-all flex items-center justify-center font-semibold text-gray-700"
+                >
+                  +
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                <span>最少2人</span>
+                <span>最多50人</span>
+              </div>
+            </div>
+
+            {/* 费用分摊方式 */}
+            <div>
+              <div className="text-sm font-medium text-gray-900 mb-3">费用分摊</div>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setCostType('aa')}
+                  className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
+                    costType === 'aa'
+                      ? 'border-[#f98801] bg-[#FFF7F0]'
+                      : 'border-gray-200 bg-white hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 mb-1">AA制</div>
+                      <div className="text-xs text-gray-500">费用平均分摊</div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      costType === 'aa' ? 'border-[#f98801]' : 'border-gray-300'
+                    }`}>
+                      {costType === 'aa' && (
+                        <div className="w-3 h-3 rounded-full bg-[#f98801]" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setCostType('organizer')}
+                  className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
+                    costType === 'organizer'
+                      ? 'border-[#f98801] bg-[#FFF7F0]'
+                      : 'border-gray-200 bg-white hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 mb-1">发起人请客</div>
+                      <div className="text-xs text-gray-500">由发起人承担全部费用</div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      costType === 'organizer' ? 'border-[#f98801]' : 'border-gray-300'
+                    }`}>
+                      {costType === 'organizer' && (
+                        <div className="w-3 h-3 rounded-full bg-[#f98801]" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setCostType('free')}
+                  className={`w-full p-3 rounded-xl border-2 transition-all text-left ${
+                    costType === 'free'
+                      ? 'border-[#f98801] bg-[#FFF7F0]'
+                      : 'border-gray-200 bg-white hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 mb-1">免费活动</div>
+                      <div className="text-xs text-gray-500">无需支付费用</div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      costType === 'free' ? 'border-[#f98801]' : 'border-gray-300'
+                    }`}>
+                      {costType === 'free' && (
+                        <div className="w-3 h-3 rounded-full bg-[#f98801]" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* 邀请好友 */}
           <div className="bg-white p-4 mb-2">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                 <UserPlus className="w-4 h-4" style={{ color: '#f98801' }} />
-                邀请好友
+                已邀请好友
               </h3>
               <button
-                onClick={() => setShowFriendInvite(!showFriendInvite)}
-                className="text-xs font-medium"
-                style={{ color: '#f98801' }}
+                onClick={() => setShowFriendSelection(true)}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-white transition-all active:scale-95"
+                style={{ backgroundColor: '#f98801' }}
               >
-                {showFriendInvite ? '收起' : `查看全部 (${friends.length})`}
+                <Plus className="w-3.5 h-3.5" />
+                选择好友
               </button>
             </div>
-            <div className="space-y-2">
-              {(showFriendInvite ? friends : friends.slice(0, 2)).map((friend) => (
-                <div key={friend.id} className="relative">
-                  <button
-                    onClick={() => toggleParticipant(friend.id)}
-                    className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
-                      selectedParticipants.includes(friend.id)
-                        ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
-                        : 'bg-gray-50 hover:bg-gray-100'
-                    }`}
-                  >
+            
+            {invitedFriendsList.length === 0 ? (
+              <div className="text-center py-8 text-sm text-gray-500">
+                <UserPlus className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                <p>暂无邀请好友</p>
+                <p className="text-xs mt-1">点击"选择好友"邀请好友参与活动</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {invitedFriendsList.map((friend) => (
+                  <div key={friend.id} className="relative bg-[#F0F2FF] ring-2 ring-[#f98801] p-3 pr-12 rounded-xl flex items-center gap-3">
                     {/* 头像 */}
                     <div className="w-12 h-12 flex-shrink-0 relative">
                       <div className="w-full h-full rounded-full overflow-hidden">
@@ -507,7 +703,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                     </div>
 
                     {/* 好友信息 */}
-                    <div className="flex-1 text-left pr-8">
+                    <div className="flex-1 text-left">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="text-sm font-semibold text-gray-900">{friend.name}</h4>
                         <Heart className="w-3 h-3 fill-red-500 text-red-500" />
@@ -523,93 +719,135 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
                         <span>共同活动 {friend.commonActivities} 次</span>
                       </div>
                     </div>
-                  </button>
-                  
-                  {/* 查看详情按钮 */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowParticipantDetail(friend);
-                    }}
-                    className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
-                    style={{ color: '#f98801' }}
-                  >
-                    <Info className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
+
+                    {/* 移除按钮 */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeInvitedFriend(friend.id);
+                      }}
+                      className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-red-200"
+                      style={{ color: '#ef4444' }}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 推荐参与者 */}
           <div className="bg-white p-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4" style={{ color: '#f98801' }} />
-              推荐参与者
-            </h3>
-            <div className="space-y-2">
-              {recommendedParticipants.map((participant) => (
-                <div key={participant.id} className="relative">
-                  <button
-                    onClick={() => toggleParticipant(participant.id)}
-                    className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
-                      selectedParticipants.includes(participant.id)
-                        ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
-                        : 'bg-gray-50 hover:bg-gray-100'
-                    }`}
-                  >
-                    {/* 头像 */}
-                    <div className="w-12 h-12 flex-shrink-0 relative">
-                      <div className="w-full h-full rounded-full overflow-hidden">
-                        <img
-                          src={participant.avatar}
-                          alt={participant.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      {/* 状态指示器 */}
-                      <div
-                        className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"
-                        style={{ backgroundColor: getStatusColor(participant.status) }}
-                      ></div>
-                    </div>
+            {/* 标题和刷新按钮 */}
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                <Users className="w-4 h-4" style={{ color: '#f98801' }} />
+                推荐参与者
+              </h3>
+              <button
+                onClick={refreshRecommendations}
+                className="p-1.5 rounded-full hover:bg-gray-100 transition-all active:scale-95"
+                style={{ color: '#f98801' }}
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
 
-                    {/* 参与者信息 */}
-                    <div className="flex-1 text-left pr-8">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="text-sm font-semibold text-gray-900">{participant.name}</h4>
-                        <span
-                          className="text-xs font-medium"
-                          style={{ color: getStatusColor(participant.status) }}
-                        >
-                          {getStatusText(participant.status)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-600 mb-1 line-clamp-1">{participant.bio}</p>
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                        {participant.commonActivities && participant.commonActivities > 0 && (
-                          <span>共同活动 {participant.commonActivities} 次</span>
-                        )}
-                        {participant.mutualFriends && participant.mutualFriends > 0 && (
-                          <span>共同好友 {participant.mutualFriends} 人</span>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                  
-                  {/* 查看详情按钮 */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowParticipantDetail(participant);
-                    }}
-                    className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
-                    style={{ color: '#f98801' }}
-                  >
-                    <Info className="w-4 h-4" />
-                  </button>
-                </div>
+            {/* 标签筛选 */}
+            <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-2 scrollbar-hide">
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all active:scale-95 ${
+                    selectedTags.includes(tag)
+                      ? 'text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                  style={selectedTags.includes(tag) ? { backgroundColor: '#f98801' } : {}}
+                >
+                  {tag}
+                </button>
               ))}
+            </div>
+
+            {/* 参与者列表 */}
+            <div className="space-y-2">
+              {displayedRecommendations.length === 0 ? (
+                <div className="text-center py-8 text-sm text-gray-500">
+                  暂无符合条件的推荐参与者
+                </div>
+              ) : (
+                displayedRecommendations.map((participant) => (
+                  <div key={participant.id} className="relative">
+                    <button
+                      onClick={() => toggleParticipant(participant.id)}
+                      className={`w-full p-3 rounded-xl transition-all flex items-center gap-3 ${
+                        selectedParticipants.includes(participant.id)
+                          ? 'bg-[#F0F2FF] ring-2 ring-[#f98801]'
+                          : 'bg-gray-50 hover:bg-gray-100'
+                      }`}
+                    >
+                      {/* 头像 */}
+                      <div className="w-12 h-12 flex-shrink-0 relative">
+                        <div className="w-full h-full rounded-full overflow-hidden">
+                          <img
+                            src={participant.avatar}
+                            alt={participant.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* 状态指示器 */}
+                        <div
+                          className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"
+                          style={{ backgroundColor: getStatusColor(participant.status) }}
+                        ></div>
+                      </div>
+
+                      {/* 参与者信息 */}
+                      <div className="flex-1 text-left pr-8">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="text-sm font-semibold text-gray-900">{participant.name}</h4>
+                          {/* 显示参与者标签 */}
+                          <div className="flex items-center gap-1">
+                            {participant.tags.slice(0, 2).map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                                style={{ backgroundColor: '#f98801' }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-1 line-clamp-1">{participant.bio}</p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          {participant.commonActivities && participant.commonActivities > 0 && (
+                            <span>共同活动 {participant.commonActivities} 次</span>
+                          )}
+                          {participant.mutualFriends && participant.mutualFriends > 0 && (
+                            <span>共同好友 {participant.mutualFriends} 人</span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                    
+                    {/* 查看详情按钮 */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowParticipantDetail(participant);
+                      }}
+                      className="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-95"
+                      style={{ color: '#f98801' }}
+                    >
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -620,9 +858,19 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
             <span className="text-sm text-gray-600">
               已选择 {selectedParticipants.length} 人
             </span>
-            <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
-              ¥{service.pricePerHour * selectedParticipants.length}
-            </span>
+            {costType === 'free' ? (
+              <span className="text-sm font-semibold text-green-600">
+                免费活动
+              </span>
+            ) : costType === 'organizer' ? (
+              <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
+                我请客 ¥{service.pricePerHour * (selectedParticipants.length + 1)}
+              </span>
+            ) : (
+              <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
+                人均 ¥{selectedParticipants.length > 0 ? Math.round(service.pricePerHour * (selectedParticipants.length + 1) / (selectedParticipants.length + 1)) : service.pricePerHour}
+              </span>
+            )}
           </div>
           <button
             onClick={() => setBookingCompleted(true)}
@@ -631,7 +879,7 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
             disabled={!selectedTime || selectedParticipants.length === 0}
           >
             {selectedTime && selectedParticipants.length > 0
-              ? `创建活动`
+              ? `创建${isPrivate ? '私密' : '公开'}活动`
               : '请选择时间和参与者'}
           </button>
         </div>
@@ -652,6 +900,16 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
           }}
         />
       </div>
+
+      {/* 好友选择页面 */}
+      {showFriendSelection && (
+        <FriendSelectionPage
+          onBack={() => setShowFriendSelection(false)}
+          allFriends={friends}
+          initialSelected={invitedFriends}
+          onConfirm={handleFriendSelectionConfirm}
+        />
+      )}
     </div>
   );
 }

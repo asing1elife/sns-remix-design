@@ -1,4 +1,4 @@
-import { Calendar, Check, ChevronLeft, Clock, MapPin } from 'lucide-react'
+import { AlertCircle, Calendar, Check, ChevronLeft, Clock, Lock, MapPin, Users } from 'lucide-react';
 
 interface Participant {
   id: string;
@@ -24,10 +24,43 @@ interface BookingPendingPageProps {
     participants: Participant[];
     date: string;
     time: string;
+    isPrivate?: boolean; // 是否私密活动
+    costType?: 'aa' | 'free' | 'organizer'; // 费用类型
+    maxParticipants?: number; // 最大参与人数
+    merchantStatus?: 'pending' | 'approved' | 'rejected'; // 商户审核状态
   };
 }
 
 function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
+  // 获取商户审核状态文本和颜色
+  const getMerchantStatusInfo = (status?: string) => {
+    switch (status) {
+      case 'approved':
+        return { text: '商户已确认', color: '#10B981', bgColor: '#ECFDF5', icon: 'check' };
+      case 'rejected':
+        return { text: '商户已拒绝', color: '#EF4444', bgColor: '#FEF2F2', icon: 'close' };
+      case 'pending':
+      default:
+        return { text: '等待商户确认', color: '#F59E0B', bgColor: '#FFFBEB', icon: 'clock' };
+    }
+  };
+
+  // 获取费用类型文本
+  const getCostTypeText = (costType?: string) => {
+    switch (costType) {
+      case 'aa':
+        return 'AA制';
+      case 'free':
+        return '免费活动';
+      case 'organizer':
+        return '发起人请客';
+      default:
+        return 'AA制';
+    }
+  };
+
+  const merchantStatusInfo = getMerchantStatusInfo(bookingInfo.merchantStatus);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="w-[375px] bg-gray-50 min-h-screen flex flex-col relative">
@@ -76,11 +109,90 @@ function BookingPendingPage({ onBack, bookingInfo }: BookingPendingPageProps) {
               <p className="text-sm text-gray-600 text-center">
                 已向 {bookingInfo.participants.length} 位参与者发送邀请
               </p>
-              <div className="mt-4 px-4 py-2 bg-yellow-50 rounded-lg">
-                <p className="text-xs text-yellow-800 text-center">
-                  等待参与者确认后即可开始活动
-                </p>
+              
+              {/* 商户审核状态提示 */}
+              <div className="mt-4 px-4 py-2.5 rounded-lg" style={{ backgroundColor: merchantStatusInfo.bgColor }}>
+                <div className="flex items-center justify-center gap-2">
+                  {merchantStatusInfo.icon === 'check' && <Check className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  {merchantStatusInfo.icon === 'close' && <AlertCircle className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  {merchantStatusInfo.icon === 'clock' && <Clock className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  <p className="text-sm font-medium" style={{ color: merchantStatusInfo.color }}>
+                    {merchantStatusInfo.text}
+                  </p>
+                </div>
               </div>
+
+              {bookingInfo.merchantStatus !== 'approved' && (
+                <div className="mt-2 px-4 py-2 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-600 text-center">
+                    {bookingInfo.merchantStatus === 'rejected' 
+                      ? '请联系商户或选择其他场所' 
+                      : '等待参与者确认后即可开始活动'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 活动配置信息 */}
+          <div className="bg-white p-4 mb-2">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">活动配置</h3>
+            <div className="space-y-3">
+              {/* 活动类型 */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  {bookingInfo.isPrivate ? (
+                    <>
+                      <Lock className="w-4 h-4" style={{ color: '#f98801' }} />
+                      <span>私密活动</span>
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-4 h-4" style={{ color: '#f98801' }} />
+                      <span>公开活动</span>
+                    </>
+                  )}
+                </div>
+                <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                  backgroundColor: bookingInfo.isPrivate ? '#FFF7F0' : '#F0F2FF',
+                  color: bookingInfo.isPrivate ? '#f98801' : '#4F46E5'
+                }}>
+                  {bookingInfo.isPrivate ? '仅邀请可见' : '所有人可见'}
+                </span>
+              </div>
+
+              {/* 费用类型 */}
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">费用类型</div>
+                <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
+                  {getCostTypeText(bookingInfo.costType)}
+                </span>
+              </div>
+
+              {/* 参与人数 */}
+              {bookingInfo.maxParticipants && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">参与人数</div>
+                  <span className="text-sm font-semibold text-gray-900">
+                    {bookingInfo.participants.length + 1} / {bookingInfo.maxParticipants} 人
+                  </span>
+                </div>
+              )}
+
+              {/* 费用明细 */}
+              {bookingInfo.costType !== 'free' && (
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <div className="text-sm text-gray-600">
+                    {bookingInfo.costType === 'organizer' ? '总费用' : '人均费用'}
+                  </div>
+                  <span className="text-base font-bold" style={{ color: '#f98801' }}>
+                    ¥{bookingInfo.costType === 'organizer' 
+                      ? bookingInfo.service.pricePerHour * (bookingInfo.participants.length + 1)
+                      : Math.round(bookingInfo.service.pricePerHour * (bookingInfo.participants.length + 1) / (bookingInfo.participants.length + 1))
+                    }
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
