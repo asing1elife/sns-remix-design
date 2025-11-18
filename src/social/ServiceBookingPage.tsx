@@ -1,6 +1,7 @@
-import { Calendar, ChevronLeft, Clock, Heart, Info, Star, UserPlus, Users, X } from 'lucide-react'
+import { Calendar, ChevronLeft, Clock, Heart, Info, UserPlus, Users } from 'lucide-react'
 import { useState } from 'react'
 import BookingPendingPage from './BookingPendingPage'
+import ParticipantDetailModal from './ParticipantDetailModal'
 
 interface ServiceBookingPageProps {
   onBack: () => void;
@@ -569,159 +570,20 @@ function ServiceBookingPage({ onBack, service, venueName, venueLocation, venueDi
         </div>
 
         {/* 参与者详情半屏弹窗 */}
-        {showParticipantDetail && (
-          <div
-            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
-            onClick={() => setShowParticipantDetail(null)}
-          >
-            <div
-              className="w-[375px] bg-white rounded-t-3xl max-h-[70vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* 关闭按钮 */}
-              <div className="sticky top-0 bg-white z-10 px-4 pt-4 pb-2 flex items-center justify-between border-b border-gray-100">
-                <h2 className="text-lg font-semibold text-gray-900">参与者详情</h2>
-                <button
-                  onClick={() => setShowParticipantDetail(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-
-              {/* 参与者头部信息 */}
-              <div className="p-4">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 relative">
-                    <img
-                      src={showParticipantDetail.avatar}
-                      alt={showParticipantDetail.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div
-                      className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white"
-                      style={{ backgroundColor: getStatusColor(showParticipantDetail.status) }}
-                    ></div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-xl font-bold text-gray-900">{showParticipantDetail.name}</h3>
-                      {showParticipantDetail.isFriend && (
-                        <Heart className="w-4 h-4 fill-red-500 text-red-500" />
-                      )}
-                      <span
-                        className="px-2 py-0.5 rounded-full text-xs font-medium"
-                        style={{
-                          backgroundColor: getStatusColor(showParticipantDetail.status) + '20',
-                          color: getStatusColor(showParticipantDetail.status),
-                        }}
-                      >
-                        {getStatusText(showParticipantDetail.status)}
-                      </span>
-                    </div>
-                    {showParticipantDetail.activityScore && (
-                      <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-                        <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold">{showParticipantDetail.activityScore}</span>
-                          <span className="text-gray-400">活跃度</span>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex gap-1 flex-wrap">
-                      {showParticipantDetail.tags.map((tag: string, index: number) => (
-                        <span
-                          key={index}
-                          className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
-                          style={{ backgroundColor: '#f98801' }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 统计数据 */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                      {showParticipantDetail.totalActivities || 0}
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">参与活动</div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                      {showParticipantDetail.commonActivities || 0}
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">共同活动</div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                      {showParticipantDetail.mutualFriends || 0}
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">共同好友</div>
-                  </div>
-                </div>
-
-                {/* 详细介绍 */}
-                {showParticipantDetail.fullBio && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">个人简介</h4>
-                    <p className="text-sm text-gray-600 leading-relaxed">{showParticipantDetail.fullBio}</p>
-                  </div>
-                )}
-
-                {/* 兴趣爱好 */}
-                {showParticipantDetail.interests && showParticipantDetail.interests.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">兴趣爱好</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {showParticipantDetail.interests.map((interest: string, index: number) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700"
-                        >
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 活动照片 */}
-                {showParticipantDetail.images && showParticipantDetail.images.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">活动瞬间</h4>
-                    <div className="grid grid-cols-3 gap-2">
-                      {showParticipantDetail.images.map((image: string, index: number) => (
-                        <div key={index} className="aspect-square rounded-xl overflow-hidden">
-                          <img
-                            src={image}
-                            alt={`活动照片 ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 邀请按钮 */}
-                <button
-                  onClick={() => {
-                    toggleParticipant(showParticipantDetail.id);
-                    setShowParticipantDetail(null);
-                  }}
-                  className="w-full py-3 rounded-xl text-white font-semibold transition-all active:scale-[0.98]"
-                  style={{ backgroundColor: '#f98801' }}
-                >
-                  {selectedParticipants.includes(showParticipantDetail.id) ? '取消邀请' : '邀请参与'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <ParticipantDetailModal
+          participant={showParticipantDetail}
+          onClose={() => setShowParticipantDetail(null)}
+          onAction={(actionType) => {
+            if (actionType === 'message' || actionType === 'call' || actionType === 'addFriend') {
+              console.log(`${actionType} action triggered for participant:`, showParticipantDetail?.id);
+            }
+            // 如果在邀请流程中，可以切换参与者选择状态
+            if (showParticipantDetail) {
+              toggleParticipant(showParticipantDetail.id);
+              setShowParticipantDetail(null);
+            }
+          }}
+        />
       </div>
     </div>
   );

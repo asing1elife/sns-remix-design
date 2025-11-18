@@ -1,6 +1,7 @@
-import { AlertCircle, Calendar, Check, ChevronLeft, Clock, Heart, MapPin, MessageCircle, Phone, Send, Share2, Star, ThumbsUp, UserPlus, X } from 'lucide-react'
+import { AlertCircle, Calendar, Check, ChevronLeft, Clock, MapPin, MessageCircle, Phone, Send, Share2, ThumbsUp, X } from 'lucide-react'
 import { useState } from 'react'
 import ActivityReviewPage from './ActivityReviewPage'
+import ParticipantDetailModal from './ParticipantDetailModal'
 
 type ActivityStatus = 'ongoing' | 'completed' | 'cancelled' | 'pending';
 type ActivityType = 'organized' | 'participated';
@@ -645,134 +646,14 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
         </div>
 
         {/* 参与者详情半屏弹窗 */}
-        {selectedParticipant && (
-          <div
-            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
-            onClick={() => setSelectedParticipant(null)}
-          >
-            <div
-              className="w-[375px] bg-white rounded-t-3xl max-h-[70vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* 关闭按钮 */}
-              <div className="sticky top-0 bg-white z-10 px-4 pt-4 pb-2 flex items-center justify-between border-b border-gray-100">
-                <h2 className="text-lg font-semibold text-gray-900">参与者详情</h2>
-                <button
-                  onClick={() => setSelectedParticipant(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-
-              {/* 参与者头部信息 */}
-              <div className="p-4">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
-                    <img
-                      src={selectedParticipant.avatar}
-                      alt={selectedParticipant.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-xl font-bold text-gray-900">{selectedParticipant.name}</h3>
-                      {selectedParticipant.isFriend && (
-                        <Heart className="w-4 h-4 fill-red-500 text-red-500" />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {selectedParticipant.status === 'confirmed' && (
-                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">已确认参加</span>
-                      )}
-                      {selectedParticipant.status === 'pending' && (
-                        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">待确认</span>
-                      )}
-                      {selectedParticipant.status === 'declined' && (
-                        <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">已拒绝</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 统计数据 */}
-                <div className="grid grid-cols-3 gap-3 mb-4">
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                      25
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">参与活动</div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                      8
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">共同活动</div>
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-3 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <div className="text-lg font-bold" style={{ color: '#f98801' }}>
-                        4.8
-                      </div>
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">活跃度</div>
-                  </div>
-                </div>
-
-                {/* 详细介绍 */}
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-900 mb-2">个人简介</h4>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    热爱运动和户外活动，经常参加各类团体活动。性格开朗友善，善于营造活跃气氛。希望通过活动认识更多志同道合的朋友。
-                  </p>
-                </div>
-
-                {/* 兴趣爱好 */}
-                <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-900 mb-2">兴趣爱好</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">健身</span>
-                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">篮球</span>
-                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">登山</span>
-                    <span className="px-3 py-1.5 bg-gray-50 rounded-lg text-sm text-gray-700">摄影</span>
-                  </div>
-                </div>
-
-                {/* 操作按钮 */}
-                <div className="flex gap-3">
-                  {selectedParticipant.isFriend ? (
-                    <>
-                      <button
-                        className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                        style={{ borderColor: '#f98801', color: '#f98801' }}
-                      >
-                        <MessageCircle className="w-5 h-5" />
-                        发消息
-                      </button>
-                      <button
-                        className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                        style={{ backgroundColor: '#f98801' }}
-                      >
-                        <Phone className="w-5 h-5" />
-                        打电话
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="flex-1 py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                      style={{ backgroundColor: '#f98801' }}
-                    >
-                      <UserPlus className="w-5 h-5" />
-                      添加好友
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <ParticipantDetailModal
+          participant={selectedParticipant}
+          onClose={() => setSelectedParticipant(null)}
+          onAction={(actionType) => {
+            console.log(`${actionType} action triggered for participant:`, selectedParticipant?.id);
+            setSelectedParticipant(null);
+          }}
+        />
       </div>
     </div>
   );
