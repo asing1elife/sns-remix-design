@@ -72,11 +72,17 @@ function ExplorePage() {
           location: selectedActivity.location,
           date: selectedActivity.time.split(' ')[0],
           time: selectedActivity.time,
-          status: 'ongoing',
-          type: 'participated',
+          status: 'recruiting', // 探索页面的活动都是报名中状态
+          type: 'exploring', // 标记为探索模式
           totalParticipants: selectedActivity.maxParticipants,
           confirmedParticipants: selectedActivity.currentParticipants,
           pricePerHour: 50,
+          // 添加活动配置信息
+          isPrivate: false, // 探索页面的活动都是公开的
+          costType: 'aa',
+          maxParticipants: selectedActivity.maxParticipants,
+          merchantStatus: 'approved', // 探索页面的活动商户已审核通过
+          serviceLevel: '精品场地',
           participants: [
             { 
               id: '1', 

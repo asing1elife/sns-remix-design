@@ -1,10 +1,10 @@
-import { AlertCircle, Calendar, Check, ChevronLeft, Clock, MapPin, MessageCircle, Phone, Send, Share2, ThumbsUp, X } from 'lucide-react'
+import { AlertCircle, Calendar, Check, ChevronLeft, Clock, Lock, MapPin, MessageCircle, Phone, Send, Share2, ThumbsUp, Users, X } from 'lucide-react'
 import { useState } from 'react'
 import ActivityReviewPage from './ActivityReviewPage'
 import ParticipantDetailModal from './ParticipantDetailModal'
 
-type ActivityStatus = 'ongoing' | 'completed' | 'cancelled' | 'pending';
-type ActivityType = 'organized' | 'participated';
+type ActivityStatus = 'ongoing' | 'completed' | 'cancelled' | 'pending' | 'recruiting';
+type ActivityType = 'organized' | 'participated' | 'exploring';
 
 interface Participant {
   id: string;
@@ -61,12 +61,21 @@ interface ActivityDetailPageProps {
       avatar: string;
       phone?: string;
     };
+    // 新增：活动配置信息
+    isPrivate?: boolean; // 是否私密活动
+    costType?: 'aa' | 'free' | 'organizer'; // 费用类型
+    maxParticipants?: number; // 最大参与人数
+    merchantStatus?: 'pending' | 'approved' | 'rejected'; // 商户审核状态
+    serviceLevel?: string; // 服务等级
   };
 }
 
 function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
   const [showReviewPage, setShowReviewPage] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [applyReason, setApplyReason] = useState('');
+  const [applyIntro, setApplyIntro] = useState('');
   const [comments, setComments] = useState<Comment[]>([
     {
       id: '1',
@@ -104,6 +113,35 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
   ]);
   const [newComment, setNewComment] = useState('');
 
+  // 获取商户审核状态文本和颜色
+  const getMerchantStatusInfo = (status?: string) => {
+    switch (status) {
+      case 'approved':
+        return { text: '商户已确认', color: '#10B981', bgColor: '#ECFDF5', icon: 'check' };
+      case 'rejected':
+        return { text: '商户已拒绝', color: '#EF4444', bgColor: '#FEF2F2', icon: 'close' };
+      case 'pending':
+      default:
+        return { text: '等待商户确认', color: '#F59E0B', bgColor: '#FFFBEB', icon: 'clock' };
+    }
+  };
+
+  // 获取费用类型文本
+  const getCostTypeText = (costType?: string) => {
+    switch (costType) {
+      case 'aa':
+        return 'AA制';
+      case 'free':
+        return '免费活动';
+      case 'organizer':
+        return '发起人请客';
+      default:
+        return 'AA制';
+    }
+  };
+
+  const merchantStatusInfo = getMerchantStatusInfo(activity.merchantStatus);
+
   const handleLikeComment = (commentId: string) => {
     setComments(comments.map(comment => {
       if (comment.id === commentId) {
@@ -137,6 +175,14 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
 
   const getStatusConfig = (status: ActivityStatus, type: ActivityType) => {
     switch (status) {
+      case 'recruiting':
+        return {
+          title: '报名中',
+          icon: <Users className="w-8 h-8 text-white" strokeWidth={3} />,
+          bgColor: '#f98801',
+          description: '活动正在招募中，快来报名吧！',
+          showCountdown: false,
+        };
       case 'ongoing':
         return {
           title: '活动进行中',
@@ -175,6 +221,8 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
   const statusConfig = getStatusConfig(activity.status, activity.type);
   const isOrganizer = activity.type === 'organized';
   const isPendingParticipant = activity.status === 'pending' && activity.type === 'participated';
+  const isRecruiting = activity.status === 'recruiting';
+  const isExploring = activity.type === 'exploring';
 
   // 如果显示回顾页面，渲染回顾页面组件
   if (showReviewPage) {
@@ -290,6 +338,15 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
               </div>
             )}
             
+            {/* 报名中状态显示剩余名额 */}
+            {activity.status === 'recruiting' && activity.maxParticipants && (
+              <div className="px-4 py-2.5 rounded-xl border" style={{ backgroundColor: '#FFF7F0', borderColor: '#f98801' }}>
+                <p className="text-xs text-center font-medium" style={{ color: '#f98801' }}>
+                  🔥 还剩 {activity.maxParticipants - activity.confirmedParticipants} 个名额
+                </p>
+              </div>
+            )}
+            
             {/* 待确认状态显示待确认人数 */}
             {activity.status === 'pending' && !isPendingParticipant && (
               <div className="px-4 py-2.5 bg-yellow-50 rounded-xl border border-yellow-100">
@@ -310,6 +367,85 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 </p>
               </div>
             )}
+
+            {/* 商户审核状态提示 */}
+            {activity.merchantStatus && (
+              <div className="mt-3 px-4 py-2.5 rounded-lg" style={{ backgroundColor: merchantStatusInfo.bgColor }}>
+                <div className="flex items-center justify-center gap-2">
+                  {merchantStatusInfo.icon === 'check' && <Check className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  {merchantStatusInfo.icon === 'close' && <AlertCircle className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  {merchantStatusInfo.icon === 'clock' && <Clock className="w-4 h-4" style={{ color: merchantStatusInfo.color }} />}
+                  <p className="text-sm font-medium" style={{ color: merchantStatusInfo.color }}>
+                    {merchantStatusInfo.text}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 分隔线 */}
+          <div className="h-2 bg-gray-50"></div>
+
+          {/* 活动配置信息 */}
+          <div className="px-4 py-5">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">活动配置</h3>
+            <div className="space-y-3">
+              {/* 活动类型 */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  {activity.isPrivate ? (
+                    <>
+                      <Lock className="w-4 h-4" style={{ color: '#f98801' }} />
+                      <span>私密活动</span>
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-4 h-4" style={{ color: '#f98801' }} />
+                      <span>公开活动</span>
+                    </>
+                  )}
+                </div>
+                <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                  backgroundColor: activity.isPrivate ? '#FFF7F0' : '#F0F2FF',
+                  color: activity.isPrivate ? '#f98801' : '#4F46E5'
+                }}>
+                  {activity.isPrivate ? '仅邀请可见' : '所有人可见'}
+                </span>
+              </div>
+
+              {/* 费用类型 */}
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">费用类型</div>
+                <span className="text-sm font-semibold" style={{ color: '#f98801' }}>
+                  {getCostTypeText(activity.costType)}
+                </span>
+              </div>
+
+              {/* 参与人数 */}
+              {activity.maxParticipants && (
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600">参与人数</div>
+                  <span className="text-sm font-semibold text-gray-900">
+                    {activity.confirmedParticipants} / {activity.maxParticipants} 人
+                  </span>
+                </div>
+              )}
+
+              {/* 费用明细 */}
+              {activity.costType !== 'free' && (
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                  <div className="text-sm text-gray-600">
+                    {activity.costType === 'organizer' ? '总费用' : '人均费用'}
+                  </div>
+                  <span className="text-base font-bold" style={{ color: '#f98801' }}>
+                    ¥{activity.costType === 'organizer' 
+                      ? activity.pricePerHour * activity.totalParticipants
+                      : Math.round(activity.pricePerHour * activity.totalParticipants / activity.totalParticipants)
+                    }
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* 分隔线 */}
@@ -317,10 +453,10 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
 
           {/* 活动信息 */}
           <div className="px-4 py-5">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{activity.title}</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">活动信息</h3>
             
             {/* 场地信息 */}
-            <div className="flex items-start gap-3 mb-3">
+            <div className="flex items-start gap-3 mb-3 pb-3 border-b border-gray-100">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: '#F0F2FF' }}
@@ -333,6 +469,39 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
                 <div className="text-xs text-gray-600 mt-1">{activity.location}</div>
               </div>
             </div>
+
+            {/* 服务信息 */}
+            {activity.title && (
+              <div className="flex items-start gap-3 mb-3 pb-3 border-b border-gray-100">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: '#F0F2FF' }}
+                >
+                  <svg className="w-5 h-5" style={{ color: '#f98801' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="9" y1="9" x2="15" y2="9"/>
+                    <line x1="9" y1="15" x2="15" y2="15"/>
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs text-gray-500 mb-1">活动项目</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-gray-900">{activity.title}</span>
+                    {activity.serviceLevel && (
+                      <span
+                        className="px-2 py-0.5 rounded-full text-xs font-medium text-white"
+                        style={{ backgroundColor: '#f98801' }}
+                      >
+                        {activity.serviceLevel}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm font-semibold mt-1" style={{ color: '#f98801' }}>
+                    ¥{activity.pricePerHour}/小时
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 时间信息 */}
             <div className="flex items-start gap-3">
@@ -657,7 +826,155 @@ function ActivityDetailPage({ onBack, activity }: ActivityDetailPageProps) {
               返回列表
             </button>
           )}
+
+          {activity.status === 'recruiting' && (
+            <div className="space-y-3">
+              {/* 报名说明 */}
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
+                <AlertCircle className="w-4 h-4" />
+                <span>报名后等待发起人确认，确认后将锁定名额</span>
+              </div>
+              
+              {/* 操作按钮 */}
+              <div className="flex gap-3">
+                <button
+                  className="flex-1 py-3 rounded-xl border-2 font-semibold text-base transition-all active:scale-[0.98]"
+                  style={{ borderColor: '#f98801', color: '#f98801' }}
+                >
+                  收藏活动
+                </button>
+                <button
+                  onClick={() => setShowApplyModal(true)}
+                  className="flex-[2] py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] shadow-lg"
+                  style={{ backgroundColor: '#f98801' }}
+                >
+                  🚀 立即报名
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* 报名申请弹窗 */}
+        {showApplyModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
+            <div
+              className="w-[375px] bg-white rounded-t-3xl overflow-hidden"
+              style={{ maxHeight: '80vh' }}
+            >
+              {/* 弹窗头部 */}
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-900">申请参加活动</h3>
+                <button
+                  onClick={() => {
+                    setShowApplyModal(false);
+                    setApplyReason('');
+                    setApplyIntro('');
+                  }}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6 text-gray-600" />
+                </button>
+              </div>
+
+              {/* 弹窗内容 */}
+              <div className="p-4 space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 140px)' }}>
+                {/* 活动信息卡片 */}
+                <div className="bg-gray-50 rounded-xl p-3 flex items-start gap-3">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={activity.coverImage}
+                      alt={activity.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">
+                      {activity.title}
+                    </h4>
+                    <div className="flex items-center gap-1 text-xs text-gray-600 mb-0.5">
+                      <Calendar className="w-3 h-3" />
+                      <span>{activity.date}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-gray-600">
+                      <MapPin className="w-3 h-3" />
+                      <span className="line-clamp-1">{activity.location}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 报名理由 */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    报名理由 <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={applyReason}
+                    onChange={(e) => setApplyReason(e.target.value)}
+                    placeholder="告诉发起人你为什么想参加这个活动..."
+                    className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none outline-none focus:border-[#f98801] focus:ring-1 focus:ring-[#f98801] transition-colors"
+                    maxLength={200}
+                  />
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs text-gray-500">让发起人了解你的意向</span>
+                    <span className="text-xs text-gray-400">{applyReason.length}/200</span>
+                  </div>
+                </div>
+
+                {/* 个人介绍（可选） */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    个人介绍 <span className="text-xs text-gray-500 font-normal">(可选)</span>
+                  </label>
+                  <textarea
+                    value={applyIntro}
+                    onChange={(e) => setApplyIntro(e.target.value)}
+                    placeholder="简单介绍一下自己，增加通过机会..."
+                    className="w-full h-20 px-3 py-2 border border-gray-300 rounded-lg text-sm resize-none outline-none focus:border-[#f98801] focus:ring-1 focus:ring-[#f98801] transition-colors"
+                    maxLength={150}
+                  />
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs text-gray-500">如：兴趣爱好、活动经验等</span>
+                    <span className="text-xs text-gray-400">{applyIntro.length}/150</span>
+                  </div>
+                </div>
+
+                {/* 温馨提示 */}
+                <div className="bg-blue-50 rounded-lg p-3 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-xs text-blue-900 leading-relaxed">
+                      <span className="font-semibold">温馨提示：</span>
+                      报名后将进入待确认状态，发起人审核通过后您将收到通知。请保持联系方式畅通。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 弹窗底部按钮 */}
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+                <button
+                  onClick={() => {
+                    if (applyReason.trim()) {
+                      // 提交报名申请
+                      console.log('提交报名申请:', { applyReason, applyIntro });
+                      setShowApplyModal(false);
+                      setApplyReason('');
+                      setApplyIntro('');
+                      // TODO: 这里可以添加成功提示
+                      alert('报名申请已提交！\n\n发起人确认后您将收到通知。');
+                    }
+                  }}
+                  disabled={!applyReason.trim()}
+                  className="w-full py-3 rounded-xl text-white font-semibold text-base transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: '#f98801' }}
+                >
+                  {applyReason.trim() ? '提交申请' : '请填写报名理由'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 参与者详情半屏弹窗 */}
         <ParticipantDetailModal
