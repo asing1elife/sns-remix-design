@@ -1,9 +1,9 @@
-import { Calendar, ChevronRight, Clock, MapPin, Users } from 'lucide-react';
-import { useState } from 'react';
-import ActivityDetailPage from './ActivityDetailPage';
+import { Calendar, ChevronRight, Clock, MapPin, MessageCircle, Search, Users } from 'lucide-react'
+import { useState } from 'react'
+import ActivityDetailPage from './ActivityDetailPage'
 
 interface MyActivitiesPageProps {
-  onNavigate: (page: 'explore' | 'activities' | 'profile') => void;
+  onNavigate: (page: 'explore' | 'activities' | 'messages' | 'profile') => void;
 }
 
 type ActivityStatus = 'ongoing' | 'completed' | 'cancelled' | 'pending';
@@ -417,24 +417,40 @@ function MyActivitiesPage({ onNavigate }: MyActivitiesPageProps) {
         </div>
 
         {/* 底部导航栏 */}
-        <div className="fixed bottom-0 w-[375px] bg-white border-t border-gray-200">
+        <div className="fixed bottom-0 w-[375px] bg-white border-t border-gray-200 z-30">
           <div className="flex items-center justify-around px-4 py-2">
             <button 
               onClick={() => onNavigate('explore')}
-              className="flex flex-col items-center py-2 px-4 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex flex-col items-center py-2 px-4 transition-colors" 
+              style={{ color: '#6B7280' }}
             >
-              <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <Search className="w-6 h-6 mb-1" />
               <span className="text-xs">探索</span>
             </button>
-            <button className="flex flex-col items-center py-2 px-4 transition-colors" style={{ color: '#f98801' }}>
+            <button 
+              className="flex flex-col items-center py-2 px-4 transition-colors" 
+              style={{ color: '#f98801' }}
+            >
               <Calendar className="w-6 h-6 mb-1" />
               <span className="text-xs font-medium">活动</span>
             </button>
             <button 
+              onClick={() => onNavigate('messages')}
+              className="flex flex-col items-center py-2 px-4 transition-colors relative" 
+              style={{ color: '#6B7280' }}
+            >
+              <MessageCircle className="w-6 h-6 mb-1" />
+              <span className="text-xs">消息</span>
+              {/* 未读消息角标 */}
+              <div
+                className="absolute top-1 right-2 w-2 h-2 rounded-full"
+                style={{ backgroundColor: '#f98801' }}
+              />
+            </button>
+            <button 
               onClick={() => onNavigate('profile')}
-              className="flex flex-col items-center py-2 px-4 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex flex-col items-center py-2 px-4 transition-colors" 
+              style={{ color: '#6B7280' }}
             >
               <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

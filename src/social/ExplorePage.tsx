@@ -1,14 +1,15 @@
-import { Calendar, MapPin, Plus, QrCode, Search } from 'lucide-react'
+import { Calendar, MapPin, MessageCircle, Plus, QrCode, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Activity, allActivities, friendsActivities, hotActivities, rankingActivities, regularActivities } from './activityData'
 import ActivityDetailPage from './ActivityDetailPage'
 import CreateActivityPage from './CreateActivityPage'
+import MessagesPage from './MessagesPage'
 import MyActivitiesPage from './MyActivitiesPage'
 import ProfilePage from './ProfilePage'
 import SearchPage from './SearchPage'
 
 type FilterType = 'all' | 'hot' | 'ranking' | 'friends' | 'regular';
-type PageType = 'explore' | 'activities' | 'profile';
+type PageType = 'explore' | 'activities' | 'messages' | 'profile';
 
 function ExplorePage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('hot');
@@ -165,6 +166,11 @@ function ExplorePage() {
     return <MyActivitiesPage onNavigate={setActivePage} />;
   }
 
+  // 如果切换到消息页面
+  if (activePage === 'messages') {
+    return <MessagesPage onNavigate={setActivePage} />;
+  }
+
   // 如果切换到我的页面
   if (activePage === 'profile') {
     return <ProfilePage onNavigate={setActivePage} />;
@@ -295,7 +301,7 @@ function ExplorePage() {
             <button 
               onClick={() => setActivePage('explore')}
               className="flex flex-col items-center py-2 px-4 transition-colors" 
-              style={{ color: 'explore' === 'explore' ? '#f98801' : '#6B7280' }}
+              style={{ color: activePage === 'explore' ? '#f98801' : '#6B7280' }}
             >
               <Search className="w-6 h-6 mb-1" />
               <span className="text-xs font-medium">探索</span>
@@ -303,15 +309,28 @@ function ExplorePage() {
             <button 
               onClick={() => setActivePage('activities')}
               className="flex flex-col items-center py-2 px-4 transition-colors" 
-              style={{ color: '#6B7280' }}
+              style={{ color: activePage === 'activities' ? '#f98801' : '#6B7280' }}
             >
               <Calendar className="w-6 h-6 mb-1" />
               <span className="text-xs">活动</span>
             </button>
             <button 
+              onClick={() => setActivePage('messages')}
+              className="flex flex-col items-center py-2 px-4 transition-colors relative" 
+              style={{ color: activePage === 'messages' ? '#f98801' : '#6B7280' }}
+            >
+              <MessageCircle className="w-6 h-6 mb-1" />
+              <span className="text-xs">消息</span>
+              {/* 未读消息角标 */}
+              <div
+                className="absolute top-1 right-2 w-2 h-2 rounded-full"
+                style={{ backgroundColor: '#f98801' }}
+              />
+            </button>
+            <button 
               onClick={() => setActivePage('profile')}
               className="flex flex-col items-center py-2 px-4 transition-colors" 
-              style={{ color: '#6B7280' }}
+              style={{ color: activePage === 'profile' ? '#f98801' : '#6B7280' }}
             >
               <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
