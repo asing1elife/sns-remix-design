@@ -82,7 +82,7 @@ function ParticipantDetailModal({ participant, onClose, onAction }: ParticipantD
 
         {/* 参与者头部信息 */}
         <div className="p-4">
-          <div className="flex items-start gap-4 mb-4">
+          <div className="flex items-start gap-4 mb-4">````
             <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
               <img
                 src={participant.avatar}
